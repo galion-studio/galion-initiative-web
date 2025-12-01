@@ -296,14 +296,12 @@ export default function PDFViewer({ url }: PDFViewerProps) {
               <span>Loading Blueprint...</span>
             </div>
           }
-          error={(error) => {
-            return (
-              <div className="text-red-500 mt-20 text-center">
-                <p>Failed to load PDF.</p>
-                <p className="text-sm opacity-70">Please check your connection or try downloading it directly.</p>
-              </div>
-            );
-          }}
+          error={
+            <div className="text-red-500 mt-20 text-center">
+              <p>Failed to load PDF.</p>
+              <p className="text-sm opacity-70">Please check your connection or try downloading it directly.</p>
+            </div>
+          }
           className="flex flex-col gap-0"
           options={pdfOptions}
         >
