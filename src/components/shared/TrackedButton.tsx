@@ -1,9 +1,10 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button, type ButtonProps as BaseButtonProps } from '@/components/ui/button';
 import { trackEvent } from '@/lib/analytics';
-import { ReactNode } from 'react';
-import { ButtonProps } from '@/components/ui/button';
+import { ReactNode, ComponentPropsWithoutRef } from 'react';
+
+type ButtonProps = ComponentPropsWithoutRef<typeof Button>;
 
 interface TrackedButtonProps extends ButtonProps {
   eventName: string;
