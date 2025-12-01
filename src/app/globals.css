@@ -1,0 +1,246 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@config "../../tailwind.config.ts";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.5rem;
+  
+  /* Institutional Colors - Light Mode (Clean, Clinical, High-Trust) */
+  --background: #ffffff;
+  --foreground: #020617; /* neutral-950 */
+
+  --card: #ffffff;
+  --card-foreground: #020617;
+
+  --popover: #ffffff;
+  --popover-foreground: #020617;
+
+  --primary: #0c87e8; /* primary-500 */
+  --primary-foreground: #ffffff;
+
+  --secondary: #f1f5f9; /* neutral-100 */
+  --secondary-foreground: #0f172a; /* neutral-900 */
+
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b; /* neutral-500 */
+
+  --accent: #f0f7ff; /* primary-50 */
+  --accent-foreground: #0069c2; /* primary-600 */
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  --border: #e2e8f0; /* neutral-200 */
+  --input: #e2e8f0;
+  --ring: #0c87e8;
+
+  --chart-1: #0c87e8;
+  --chart-2: #0069c2;
+  --chart-3: #00549e;
+  --chart-4: #f59e0b;
+  --chart-5: #d97706;
+
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #18181b;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #cbd5e1;
+}
+
+.dark {
+  /* Institutional Colors - Dark Mode (Deep, Immersive, Premium) */
+  --background: #020617; /* neutral-950 */
+  --foreground: #f8fafc; /* neutral-50 */
+
+  --card: #0f172a; /* neutral-900 */
+  --card-foreground: #f8fafc;
+
+  --popover: #0f172a;
+  --popover-foreground: #f8fafc;
+
+  --primary: #0c87e8; /* primary-500 */
+  --primary-foreground: #ffffff;
+
+  --secondary: #1e293b; /* neutral-800 */
+  --secondary-foreground: #f8fafc;
+
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8; /* neutral-400 */
+
+  --accent: #0a3b6b; /* primary-900 */
+  --accent-foreground: #ffffff;
+
+  --destructive: #991b1b;
+  --destructive-foreground: #ffffff;
+
+  --border: #1e293b; /* neutral-800 */
+  --input: #1e293b;
+  --ring: #36a2f8; /* primary-400 */
+
+  --chart-1: #36a2f8;
+  --chart-2: #0c87e8;
+  --chart-3: #0069c2;
+  --chart-4: #fbbf24;
+  --chart-5: #f59e0b;
+
+  --sidebar: #020617;
+  --sidebar-foreground: #f4f4f5;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f4f4f5;
+  --sidebar-border: #1e293b;
+  --sidebar-ring: #475569;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  /* Modern Selection Styling */
+  ::selection {
+    @apply bg-primary-500/20 text-primary-400;
+  }
+
+  /* Smooth Scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Scrollbar Styling for Webkit */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-neutral-950;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-800 rounded-full hover:bg-neutral-700 transition-colors;
+  }
+}
+
+/* Glassmorphism Utilities */
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-xl;
+  }
+  .glass-light {
+    @apply bg-white/70 backdrop-blur-md border border-neutral-200/50 shadow-sm;
+  }
+  .text-glow {
+    text-shadow: 0 0 20px rgba(12, 135, 232, 0.5);
+  }
+}
+
+/* Blink animation for hero dot - white to blue */
+@keyframes blink {
+  0%, 100% {
+    background-color: rgb(255, 255, 255); /* white */
+  }
+  50% {
+    background-color: rgb(12, 135, 232); /* primary-500 blue */
+  }
+}
+
+/* Toast Notification Styles - Better visibility */
+[data-sonner-toast] {
+  background: rgb(23 23 23) !important;
+  color: rgb(255 255 255) !important;
+  border-color: rgb(64 64 64) !important;
+}
+
+[data-sonner-toast] [data-title] {
+  color: rgb(255 255 255) !important;
+  font-weight: 600 !important;
+}
+
+[data-sonner-toast] [data-description] {
+  color: rgb(229 229 229) !important;
+  opacity: 1 !important;
+}
+
+/* PDF Viewer Styles - Continuous scrolling with no page separation */
+.react-pdf__Page {
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  display: block !important;
+  page-break-after: auto !important;
+  break-after: auto !important;
+}
+
+.react-pdf__Page__canvas {
+  display: block !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  box-shadow: none !important;
+}
+
+.react-pdf__Page__textContent {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.react-pdf__Page__annotations {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.react-pdf__Document {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0 !important;
+}
