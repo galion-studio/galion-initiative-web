@@ -12,16 +12,11 @@ compatibility_date = "2024-12-01"
 pages_build_output_dir = "out"
 
 # D1 Database binding configuration
-# If the binding option is not available in Cloudflare Dashboard, you can configure it here
-# To get your database_id:
-# 1. Go to Workers & Pages → D1 → Click on galion-newsletter2
-# 2. The database ID is in the URL or database details (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
-# 3. Uncomment and fill in the section below:
-
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "galion-newsletter2"
-# database_id = "YOUR_DATABASE_ID_HERE"  # Replace with your actual database ID from Cloudflare Dashboard
+# Configured with database UUID from Cloudflare Dashboard
+[[d1_databases]]
+binding = "DB"
+database_name = "galion-newsletter2"
+database_id = "533b3203-d799-4cb3-91ea-6635eb346ea2"
 
 # Alternative: Configure via Cloudflare Dashboard (preferred if available):
 # Pages Project → Settings → Functions → D1 database bindings
