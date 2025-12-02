@@ -55,27 +55,34 @@ If you can't find the Pages option in the unified interface:
 - The existing Worker project won't work for Next.js - you need a Pages project
 - You can delete the Worker project later if you want (it won't affect your Pages project)
 
-## Step 3: Configure Build Settings yeet the change 
+## Step 3: Configure Build Settings
 
 In the **Build configuration** section, use these settings:
 
 ### Build Settings:
-- **Framework preset**: **MUST be explicitly set to `Next.js`** ⚠️ CRITICAL - Do not rely on auto-detection!
+- **Framework preset**: **MUST be set to `None`** ⚠️ CRITICAL - For static exports, do NOT use "Next.js" preset!
 - **Build command**: `npm run build`
-- **Build output directory**: Try `.next` first. If that doesn't work, leave it empty
+- **Build output directory**: **`out`** (this is where Next.js exports static files with `output: 'export'`)
 - **Root directory**: `/` (leave as default)
-- **Deploy command**: `echo "Deployment handled by Cloudflare Pages"` (or leave empty if possible)
-- **Node.js version**: `20` (set in environment variables)
+- **Deploy command**: Leave empty (Cloudflare Pages handles deployment automatically)
+- **Node.js version**: `20` (set in environment variables)    yes
 
-**⚠️ CRITICAL - FRAMEWORK PRESET**: 
-- **You MUST explicitly set Framework preset to `Next.js`** in the Cloudflare Pages dashboard
-- If Framework preset is not set or is set to "None", Cloudflare Pages will show "Hello World" instead of your app
-- Go to: **Settings** → **Builds & deployments** → **Framework preset** → Select `Next.js`
-- This is the #1 cause of "Hello World" appearing on deployed sites
+**⚠️ CRITICAL - FRAMEWORK PRESET FOR STATIC EXPORT**: 
+- **You MUST set Framework preset to `None`** in the Cloudflare Pages dashboard
+- Setting it to "Next.js" will trigger `@cloudflare/next-on-pages` which requires `nodejs_compat` flag and is for server-side Next.js
+- For static exports (`output: 'export'`), we're deploying a static site, not a Next.js runtime app
+- Go to: **Settings** → **Builds & deployments** → **Framework preset** → Select `None`
+- This prevents the "no nodejs_compat compatibility flag set" error
+
+**⚠️ CRITICAL - BUILD OUTPUT DIRECTORY**: 
+- **MUST be set to `out`** - This is where Next.js generates static files when using `output: 'export'`
+- Do NOT use `.next` - that's for Next.js runtime deployments, not static exports
+- The `out` directory contains all the static HTML, CSS, and JavaScript files ready to be served
 
 **⚠️ IMPORTANT**: 
-- Do NOT set `output: 'standalone'` in `next.config.ts` - this is for self-hosting, not Cloudflare Pages
-- Cloudflare Pages needs the Framework preset to properly serve Next.js applications
+- Your `next.config.ts` already has `output: 'export'` configured correctly
+- This tells Next.js to generate a static site instead of a server-side application
+- Cloudflare Pages will serve the static files from the `out` directory
 
 **⚠️ CRITICAL - DEPLOYMENT ISSUE**: 
 - **For Git-integrated Cloudflare Pages**: The deploy command should be **EMPTY** - Cloudflare Pages automatically deploys after the build
@@ -142,23 +149,19 @@ For production builds, make sure to set environment variables:
 
 ## Important Notes
 
-### Next.js 16 on Cloudflare Pages
+### Next.js Static Export on Cloudflare Pages
 
-Since you're using Next.js 16, Cloudflare Pages supports Next.js natively. Here's what you need to know:
+Since you're using Next.js 16 with `output: 'export'`, you're deploying a static site. Here's what you need to know:
 
-1. **Next.js Runtime**: Cloudflare Pages will automatically use the Next.js runtime when it detects a Next.js project. Your API routes in `src/app/api/` will work automatically.
+1. **Static Site Deployment**: With `output: 'export'`, Next.js generates static HTML, CSS, and JavaScript files in the `out` directory. Cloudflare Pages serves these static files directly.
 
-2. **API Routes**: Your existing Next.js API routes (`/api/contact` and `/api/newsletter`) should work on Cloudflare Pages without modification. However:
+2. **API Routes**: Next.js API routes (`src/app/api/`) do NOT work with static export. They require a server runtime. Instead:
 
-   **Option A: Keep Next.js API Routes** (Simplest)
-   - Your current API routes will work as-is
-   - Cloudflare Pages will handle them automatically
-   - Just ensure environment variables are set correctly
-
-   **Option B: Use Cloudflare Pages Functions** (Optional, for better performance)
-   - I've created example functions in the `functions/api/` directory
-   - These can replace your Next.js API routes if you prefer
-   - Delete the `functions/api/` directory if you want to keep using Next.js API routes
+   **Use Cloudflare Pages Functions** (Required for static export)
+   - Cloudflare Functions in `functions/api/` will handle your API endpoints
+   - These functions are automatically deployed with your Pages project
+   - The functions will handle `/api/contact` and `/api/newsletter` requests
+   - Make sure the functions are in the `functions/api/` directory (already created)
 
 3. **Email Integration**: Currently, your API routes only log to console. For production:
    - Implement email sending using Resend API or similar service
@@ -194,13 +197,19 @@ The build process will:
 
 **Build succeeds but site shows "Hello World" or doesn't load**:
 - **CRITICAL**: Go to your Cloudflare Pages project → **Settings** → **Builds & deployments**
-- **Framework preset**: Must be explicitly set to `Next.js` (don't rely on auto-detection)
-- **Build output directory**: Try setting it to `.next` explicitly (even though docs say to leave empty, sometimes explicit is needed)
-- If `.next` doesn't work, try leaving it empty again and ensure Framework preset is `Next.js`
+- **Framework preset**: Must be set to `None` (not "Next.js") for static exports
+- **Build output directory**: Must be set to `out` (not `.next` or empty)
 - **Clear build cache**: Go to **Settings** → **Builds & deployments** → **Clear build cache** and redeploy
 - Verify environment variables are set
 - Check browser console for errors
-- Make sure `next.config.ts` does NOT have `output: 'standalone'` (we already fixed this)
+- Make sure `next.config.ts` has `output: 'export'` (we already configured this)
+
+**Error: "no nodejs_compat compatibility flag set" or "@cloudflare/next-on-pages" error**:
+- **Root cause**: Framework preset is set to "Next.js" which triggers the Next.js runtime
+- **Solution**: Go to **Settings** → **Builds & deployments** → **Framework preset** → Change to `None`
+- **Why**: With `output: 'export'`, we're deploying a static site, not a Next.js runtime app
+- **Build output directory**: Must be `out` (where static files are generated)
+- After changing these settings, trigger a new deployment
 
 **PDF not loading**:
 - Ensure `public/blueprint.pdf` is committed to the repository
