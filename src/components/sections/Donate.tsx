@@ -302,13 +302,13 @@ Best regards,
                                 </TabsList>
                                 <div className="relative min-h-[180px]">
                                     <TabsContent value="BTC" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                        <CryptoAddress currency="BTC" address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" />
+                                        <CryptoAddress currency="BTC" comingSoon={true} />
                                     </TabsContent>
                                     <TabsContent value="ETH" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                        <CryptoAddress currency="ETH" address="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb" />
+                                        <CryptoAddress currency="ETH" comingSoon={true} />
                                     </TabsContent>
                                     <TabsContent value="USDT" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                        <CryptoAddress currency="USDT" address="TYASr6cqzx4kWyBz2m8s2um4VdJgFmWJkB" />
+                                        <CryptoAddress currency="USDT" comingSoon={true} />
                                     </TabsContent>
                                 </div>
                             </Tabs>

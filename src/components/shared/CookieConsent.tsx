@@ -28,8 +28,8 @@ export default function CookieConsent() {
   const [showSettings, setShowSettings] = useState(false);
   const [preferences, setPreferences] = useState<CookiePreferences>({
     necessary: true, // Always true, cannot be disabled
-    analytics: false,
-    functional: false,
+    analytics: true, // Checked by default
+    functional: true, // Checked by default
   });
 
   useEffect(() => {
@@ -39,12 +39,28 @@ export default function CookieConsent() {
 
     if (!consent) {
       setShowBanner(true);
+      // All preferences are checked by default
+      setPreferences({
+        necessary: true,
+        analytics: true,
+        functional: true,
+      });
     } else if (savedPreferences) {
       try {
-        setPreferences(JSON.parse(savedPreferences));
+        const saved = JSON.parse(savedPreferences);
+        setPreferences({
+          necessary: true, // Always true
+          analytics: saved.analytics !== undefined ? saved.analytics : true, // Default to true if not set
+          functional: saved.functional !== undefined ? saved.functional : true, // Default to true if not set
+        });
       } catch (e) {
-        // Invalid preferences, show banner again
+        // Invalid preferences, show banner again with defaults
         setShowBanner(true);
+        setPreferences({
+          necessary: true,
+          analytics: true,
+          functional: true,
+        });
       }
     }
   }, []);
