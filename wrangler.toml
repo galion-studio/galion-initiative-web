@@ -2,6 +2,10 @@
 # This file is used by Cloudflare Pages to configure the build output directory
 # For D1 database bindings, configure them in Cloudflare Dashboard:
 # Pages Project → Settings → Functions → D1 database bindings
+#
+# IMPORTANT: In Cloudflare Pages Dashboard, set Framework preset to "None"
+# This prevents Cloudflare from auto-detecting Next.js and using @cloudflare/next-on-pages
+# We're using static export (output: 'export'), not server-side Next.js
 
 name = "galion-initiative-web"
 compatibility_date = "2024-12-01"
