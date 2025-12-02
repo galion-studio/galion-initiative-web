@@ -141,7 +141,7 @@ Best regards,
             </h3>
             
             <div className="bg-neutral-900/20 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-neutral-800 shadow-xl flex-1 flex flex-col">
-                {/* Ko-fi Section - Card/PayPal Payments */}
+                {/* Ko-fi Section - Card/PayPal Payments - Updated UI */}
                 <div className="mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-neutral-800">
                     <div className="mb-4 text-center">
                         <span className="inline-block text-xs font-semibold text-primary-400 uppercase tracking-wider mb-3 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20">
