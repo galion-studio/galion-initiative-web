@@ -32,6 +32,18 @@ interface Env {
   [key: string]: any;
 }
 
+// Handle OPTIONS requests for CORS
+export async function onRequestOptions() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
+}
+
 export async function onRequestPost({ request, env }: { request: Request; env: Env }) {
   try {
     // Check if D1 database is available
@@ -44,7 +56,10 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
         }),
         { 
           status: 500,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
         }
       );
     }
@@ -62,7 +77,10 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
         JSON.stringify({ success: true, message: "Subscribed successfully" }),
         { 
           status: 200,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
         }
       );
     }
@@ -73,7 +91,10 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
         JSON.stringify({ success: false, error: "Email is required" }),
         { 
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
         }
       );
     }
@@ -85,7 +106,10 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
         JSON.stringify({ success: false, error: "Invalid email format" }),
         { 
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
         }
       );
     }
@@ -104,7 +128,10 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
         JSON.stringify({ success: true, message: "Subscribed successfully" }),
         { 
           status: 200,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
         }
       );
     }
@@ -128,7 +155,12 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
       JSON.stringify({ success: true, message: "Subscribed successfully" }),
       { 
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
       }
     );
   } catch (error) {
@@ -151,7 +183,10 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
       }),
       { 
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       }
     );
   }

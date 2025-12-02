@@ -33,7 +33,28 @@ export default function Newsletter() {
         body: JSON.stringify(data),
       });
 
-      const result = await response.json();
+      // Check if response has content before parsing
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        // Try to get text to see what we got
+        const text = await response.text();
+        console.error('Non-JSON response:', text);
+        throw new Error('Server returned invalid response. Please try again later.');
+      }
+
+      // Check if response body is empty
+      const text = await response.text();
+      if (!text || text.trim() === '') {
+        throw new Error('Empty response from server. Please check your Cloudflare Functions setup.');
+      }
+
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch (parseError) {
+        console.error('JSON parse error:', parseError, 'Response text:', text);
+        throw new Error('Invalid response format. Please try again later.');
+      }
 
       if (!response.ok) {
         // Show the actual error message from the server if available
