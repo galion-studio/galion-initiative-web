@@ -3,6 +3,8 @@ import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
+import AnalyticsScript from "@/components/AnalyticsScript";
+import CookieConsent from "@/components/shared/CookieConsent";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -65,8 +67,13 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: '/logo.webp',
-    apple: '/logo.webp',
+    icon: [
+      { url: '/logo.webp', sizes: 'any', type: 'image/webp' },
+    ],
+    apple: [
+      { url: '/logo.webp', sizes: '180x180', type: 'image/webp' },
+    ],
+    shortcut: '/logo.webp',
   },
   manifest: '/site.webmanifest',
   robots: {
@@ -92,15 +99,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-950`}
       >
-        {process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN && (
-          <Script
-            defer
-            src='https://static.cloudflareinsights.com/beacon.min.js' 
-            data-cf-beacon={`{"token": "${process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN}"}`}
-          />
-        )}
+        <AnalyticsScript />
         <AnalyticsProvider />
         {children}
+        <CookieConsent />
         <Toaster />
       </body>
     </html>

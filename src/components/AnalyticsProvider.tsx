@@ -1,21 +1,95 @@
 'use client';
 
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect, Suspense } from 'react';
+import { useEffect, Suspense, useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
+import { isAnalyticsEnabled } from '@/lib/cookie-consent';
 
 function AnalyticsTracker() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
 
-  // Track page views on route change
+  // Check if analytics is enabled
   useEffect(() => {
+    const checkConsent = () => {
+      setAnalyticsEnabled(isAnalyticsEnabled());
+    };
+
+    checkConsent();
+
+    // Listen for consent changes
+    const handleConsentChange = () => {
+      checkConsent();
+    };
+
+    window.addEventListener('cookieConsentChanged', handleConsentChange);
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'galion_cookie_preferences' || e.key === 'galion_cookie_consent') {
+        checkConsent();
+      }
+    });
+
+    return () => {
+      window.removeEventListener('cookieConsentChanged', handleConsentChange);
+    };
+  }, []);
+
+  // Track page views on route change (only if analytics enabled)
+  useEffect(() => {
+    if (!analyticsEnabled) return;
+    
     const url = `${pathname}?${searchParams.toString()}`;
     trackEvent('page_view', { path: pathname, search: searchParams.toString(), url });
-  }, [pathname, searchParams]);
+    
+    // Track time on page
+    const startTime = Date.now();
+    return () => {
+      const timeOnPage = Math.round((Date.now() - startTime) / 1000); // in seconds
+      if (timeOnPage > 0) {
+        trackEvent('page_time', { path: pathname, duration: timeOnPage });
+      }
+    };
+  }, [pathname, searchParams, analyticsEnabled]);
 
-  // Global click tracker for "everything"
+  // Track scroll depth
   useEffect(() => {
+    if (!analyticsEnabled) return;
+
+    let maxScroll = 0;
+    const milestones = [25, 50, 75, 90, 100];
+    const trackedMilestones = new Set<number>();
+
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = Math.round((scrollTop / scrollHeight) * 100);
+      
+      if (scrollPercent > maxScroll) {
+        maxScroll = scrollPercent;
+        
+        // Track milestone achievements
+        milestones.forEach(milestone => {
+          if (scrollPercent >= milestone && !trackedMilestones.has(milestone)) {
+            trackedMilestones.add(milestone);
+            trackEvent('scroll_depth', { 
+              path: pathname, 
+              depth: milestone,
+              max_depth: maxScroll 
+            });
+          }
+        });
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [pathname, analyticsEnabled]);
+
+  // Global click tracker for "everything" (only if analytics enabled)
+  useEffect(() => {
+    if (!analyticsEnabled) return;
+
     const handleClick = (e: MouseEvent) => {
       // We want to track clicks on interactive elements
       const target = e.target as HTMLElement;
@@ -63,7 +137,7 @@ function AnalyticsTracker() {
     return () => {
       window.removeEventListener('click', handleClick, { capture: true });
     };
-  }, [pathname]);
+  }, [pathname, analyticsEnabled]);
 
   return null;
 }

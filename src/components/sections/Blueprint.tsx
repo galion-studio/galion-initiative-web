@@ -49,21 +49,22 @@ export default function Blueprint() {
   };
 
   return (
-    <section id="blueprint" className="py-32 bg-neutral-950 text-white relative overflow-hidden">
+    <section id="blueprint" className="py-24 sm:py-28 md:py-32 bg-neutral-950 text-white relative overflow-hidden">
       {/* Subtle Grid Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
       <div className="container px-4 md:px-6 mx-auto relative z-10">
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-start">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 xl:gap-20 items-start justify-center lg:justify-center lg:items-start">
           
           {/* Left Side: Sticky Content */}
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="lg:w-5/12 lg:sticky lg:top-32 text-center lg:text-left"
-          >
+          <div className="lg:w-2/5 w-full max-w-2xl mx-auto lg:mx-0">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="lg:sticky lg:top-32 text-center lg:text-left"
+            >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-400 text-xs font-bold tracking-wider uppercase mb-8">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Safety By Design</span>
@@ -72,7 +73,7 @@ export default function Blueprint() {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 tracking-tight leading-tight">
               The <span className="text-white">Blueprint</span>
             </h2>
-            <p className="text-lg text-neutral-400 mb-10 leading-relaxed font-light">
+            <p className="text-lg text-neutral-400 mb-10 leading-relaxed font-light max-w-xl lg:max-w-lg">
               We aren't just hoping for safe AI. We've designed a technical architecture that <span className="text-white font-medium">guarantees</span> it. Our approach treats alignment as an engineering problem with concrete, verifiable solutions.
             </p>
             
@@ -87,10 +88,12 @@ export default function Blueprint() {
               <FileText className="w-4 h-4 mr-2" />
               Read Technical Paper
             </Button>
-          </motion.div>
+            </motion.div>
+          </div>
 
           {/* Right Side: Interactive Cards */}
-          <div className="lg:w-7/12 w-full grid gap-3 md:gap-4">
+          <div className="lg:w-3/5 w-full max-w-sm lg:max-w-md mx-auto lg:mx-0">
+            <div className="grid gap-2.5 md:gap-3">
             {blueprintItems.map((item, index) => (
               <motion.div
                 key={index}
@@ -106,6 +109,7 @@ export default function Blueprint() {
                 />
               </motion.div>
             ))}
+            </div>
             
             <div className="lg:hidden mt-10 text-center">
                <Button 

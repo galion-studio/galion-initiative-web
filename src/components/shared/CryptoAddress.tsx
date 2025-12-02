@@ -56,7 +56,10 @@ export default function CryptoAddress({ currency, address, qrUrl }: CryptoAddres
       </div>
 
       {/* QR Code Area - Enhanced */}
-      <div className="relative group mb-6">
+      <div 
+        className="relative group mb-6"
+        onMouseEnter={() => trackEvent('crypto_qr_view', { currency })}
+      >
         <div className="w-40 h-40 bg-white p-4 rounded-2xl shadow-[0_0_40px_rgba(255,255,255,0.1)] flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_50px_rgba(255,255,255,0.15)] mx-auto relative z-10 border-2 border-neutral-200">
           {qrUrl ? (
             <img src={qrUrl} alt={`${currency} QR Code`} className="w-full h-full object-contain" />
@@ -119,6 +122,7 @@ export default function CryptoAddress({ currency, address, qrUrl }: CryptoAddres
                     onClick={(e) => {
                         e.stopPropagation();
                         setShowFullAddress(!showFullAddress);
+                        trackEvent('crypto_toggle_address', { currency, action: showFullAddress ? 'hide' : 'show' });
                     }}
                     className="text-xs text-primary-400 hover:text-primary-300 transition-colors underline"
                 >

@@ -32,7 +32,7 @@ const pillars = [
 
 export default function Mission() {
   return (
-    <section id="mission" className="py-32 bg-neutral-950 text-white relative overflow-hidden">
+    <section id="mission" className="py-24 sm:py-28 md:py-32 bg-neutral-950 text-white relative overflow-hidden">
       {/* Dark Ambient Background */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-neutral-900 via-neutral-950 to-neutral-950" />
       

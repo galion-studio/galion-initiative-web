@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { trackEvent } from '@/lib/analytics';
 
 export default function Newsletter() {
@@ -23,9 +24,13 @@ export default function Newsletter() {
   });
 
   async function onSubmit(data: NewsletterValues) {
-    if (data.honeypot) return; // Silent reject
+    if (data.honeypot) {
+      trackEvent('newsletter_spam_attempt', { location: 'footer' });
+      return; // Silent reject
+    }
 
     setIsSubmitting(true);
+    trackEvent('newsletter_submit_attempt', { location: 'footer' });
     try {
       // Automatically set consent to true when submitting
       const submitData = { ...data, consent: true };
@@ -66,12 +71,14 @@ export default function Newsletter() {
       }
 
       toast.success("Subscribed successfully! Thank you for joining our newsletter.");
-      trackEvent('newsletter_subscribe', { location: 'footer' });
+      trackEvent('newsletter_subscribe', { location: 'footer', success: true });
+      trackEvent('newsletter_subscribe_success', { location: 'footer' });
       form.reset();
     } catch (error) {
       // Show more detailed error message
       const errorMessage = error instanceof Error ? error.message : 'Failed to subscribe. Please try again.';
       toast.error(errorMessage);
+      trackEvent('newsletter_subscribe_error', { location: 'footer', error: errorMessage });
       console.error('Newsletter subscription error:', error);
     } finally {
       setIsSubmitting(false);
@@ -79,14 +86,46 @@ export default function Newsletter() {
   }
 
   return (
-    <section className="py-12 sm:py-16 bg-neutral-950 text-neutral-50 border-t border-neutral-900">
-      <div className="container px-4 md:px-6 mx-auto max-w-2xl text-center">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Stay Updated</h2>
-        <p className="text-sm sm:text-base text-neutral-400 mb-6 sm:mb-8 px-2">
-          Get monthly updates on breakthrough research, AI safety developments, and progress toward safe superintelligence.
-        </p>
+    <section className="py-20 sm:py-24 md:py-28 bg-neutral-950 text-neutral-50 relative overflow-hidden">
+      {/* Subtle background variation for visual interest */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900/50 via-neutral-950 to-neutral-950 pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.02] pointer-events-none" />
+      
+      <div className="container px-4 md:px-6 mx-auto max-w-2xl text-center relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <motion.h2 
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4"
+          >
+            Stay Updated
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-sm sm:text-base text-neutral-400 mb-6 sm:mb-8 px-2"
+          >
+            Get monthly updates on breakthrough research, AI safety developments, and progress toward safe superintelligence.
+          </motion.p>
+        </motion.div>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <motion.form 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          onSubmit={form.handleSubmit(onSubmit)} 
+          className="space-y-4"
+        >
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Input 
               {...form.register('email')} 
@@ -120,7 +159,7 @@ export default function Newsletter() {
             <span className="flex items-center gap-1">✓ Unsubscribe anytime</span>
             <span className="flex items-center gap-1">✓ ~1 email per month</span>
           </div>
-        </form>
+        </motion.form>
       </div>
     </section>
   );

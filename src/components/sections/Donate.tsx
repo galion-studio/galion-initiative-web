@@ -1,11 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CryptoAddress from '@/components/shared/CryptoAddress';
-import { Coffee, ArrowRight, Heart, CreditCard } from 'lucide-react';
+import { Coffee, ArrowRight, Heart, CreditCard, Wallet, ExternalLink } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 
 const tiers = [
@@ -40,8 +41,11 @@ const tiers = [
 ];
 
 export default function Donate() {
+  const [cryptoMethod, setCryptoMethod] = useState<'direct' | 'coinbase'>('coinbase');
+  const COINBASE_CHECKOUT_URL = 'https://commerce.coinbase.com/checkout/985d6a3c-5cb3-4c77-9855-ad358dfd652f';
+
   return (
-    <section id="donate" className="py-24 bg-neutral-950 text-neutral-50 border-t border-neutral-900 relative overflow-hidden">
+    <section id="donate" className="py-24 sm:py-28 md:py-32 bg-neutral-950 text-neutral-50 relative overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary-900/10 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.02]" />
@@ -81,8 +85,9 @@ export default function Donate() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
+                  onClick={() => trackEvent('click_donation_tier', { tier: tier.name, amount: tier.amount })}
                 >
-                  <div className={`relative group h-full rounded-xl p-[1px] transition-all duration-300 ${tier.highlight ? 'bg-gradient-to-br from-primary-500/40 to-primary-900/10' : 'bg-neutral-800/50 hover:bg-neutral-700/50'}`}>
+                  <div className={`relative group h-full rounded-xl p-[1px] transition-all duration-300 cursor-pointer ${tier.highlight ? 'bg-gradient-to-br from-primary-500/40 to-primary-900/10' : 'bg-neutral-800/50 hover:bg-neutral-700/50'}`}>
                     <Card className={`h-full bg-neutral-950/80 backdrop-blur-sm border-none shadow-lg ${tier.highlight ? '' : ''} transition-colors`}>
                       <CardHeader className="pb-3 pt-6 px-6 text-center sm:text-left">
                         <div className="flex justify-center sm:justify-between items-start">
@@ -111,7 +116,13 @@ export default function Donate() {
               ))}
             </div>
             
-            <div className="mt-6 sm:mt-8 flex justify-center">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="mt-6 sm:mt-8 flex justify-center"
+            >
                  <Button className="bg-white text-neutral-950 hover:bg-neutral-200 font-medium px-5 sm:px-6 py-4 sm:py-5 text-sm rounded-lg shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-all w-full sm:w-auto touch-manipulation min-h-[44px]" onClick={() => {
                     trackEvent('click_schedule_briefing', { location: 'donate_section' });
                     const subject = encodeURIComponent('Request for Strategic Briefing - The Galion Initiative');
@@ -130,11 +141,17 @@ Best regards,
                  }}>
                     Schedule a Briefing <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
-            </div>
+            </motion.div>
           </div>
 
           {/* Right Column: Direct Support */}
-          <div className="lg:col-span-5 flex flex-col h-full">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-5 flex flex-col h-full"
+          >
             <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 flex items-center justify-center lg:justify-start gap-2 sm:gap-3 text-white">
               <span className="w-1 h-5 sm:h-6 bg-primary-500 rounded-full"></span>
               Individual Contributions
@@ -177,27 +194,129 @@ Best regards,
                 {/* Crypto Section */}
                 <div>
                     <h4 className="text-xs sm:text-sm font-bold mb-3 sm:mb-4 text-center uppercase tracking-wider text-neutral-500">Cryptocurrency</h4>
-                    <Tabs defaultValue="BTC" className="w-full" onValueChange={(val) => trackEvent('crypto_tab_change', { currency: val })}>
-                        <TabsList className="grid w-full grid-cols-3 bg-neutral-950 p-1 rounded-lg mb-4 sm:mb-6 border border-neutral-800 h-10 sm:h-9">
-                            <TabsTrigger value="BTC" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">BTC</TabsTrigger>
-                            <TabsTrigger value="ETH" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">ETH</TabsTrigger>
-                            <TabsTrigger value="USDT" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">USDT</TabsTrigger>
-                        </TabsList>
-                        <div className="relative min-h-[180px]">
-                            <TabsContent value="BTC" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                <CryptoAddress currency="BTC" address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" />
-                            </TabsContent>
-                            <TabsContent value="ETH" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                <CryptoAddress currency="ETH" address="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb" />
-                            </TabsContent>
-                            <TabsContent value="USDT" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                <CryptoAddress currency="USDT" address="TYASr6cqzx4kWyBz2m8s2um4VdJgFmWJkB" />
-                            </TabsContent>
+                    
+                    {/* Method Selector */}
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4 }}
+                      className="mb-4 sm:mb-6"
+                    >
+                        <div className="grid grid-cols-2 gap-2 bg-neutral-950 p-1 rounded-lg border border-neutral-800">
+                            <button
+                                onClick={() => {
+                                    setCryptoMethod('coinbase');
+                                    trackEvent('crypto_method_change', { method: 'coinbase' });
+                                }}
+                                className={`px-3 py-2.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 touch-manipulation ${
+                                    cryptoMethod === 'coinbase'
+                                        ? 'bg-neutral-800 text-white shadow-sm'
+                                        : 'text-neutral-400 hover:text-neutral-300 hover:bg-neutral-900/50'
+                                }`}
+                            >
+                                <div className="flex items-center justify-center gap-1.5">
+                                    <CreditCard className="w-3.5 h-3.5" />
+                                    <span>Coinbase</span>
+                                </div>
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setCryptoMethod('direct');
+                                    trackEvent('crypto_method_change', { method: 'direct' });
+                                }}
+                                className={`px-3 py-2.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 touch-manipulation ${
+                                    cryptoMethod === 'direct'
+                                        ? 'bg-neutral-800 text-white shadow-sm'
+                                        : 'text-neutral-400 hover:text-neutral-300 hover:bg-neutral-900/50'
+                                }`}
+                            >
+                                <div className="flex items-center justify-center gap-1.5">
+                                    <Wallet className="w-3.5 h-3.5" />
+                                    <span>Direct</span>
+                                </div>
+                            </button>
                         </div>
-                    </Tabs>
+                    </motion.div>
+
+                    {/* Coinbase Commerce Method */}
+                    {cryptoMethod === 'coinbase' && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="animate-in fade-in slide-in-from-bottom-2 duration-300"
+                        >
+                            <div className="flex flex-col items-center py-6 sm:py-8">
+                                {/* Coinbase Logo/Branding */}
+                                <div className="mb-6 text-center">
+                                    <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20 mb-4">
+                                        <CreditCard className="w-5 h-5 text-blue-400" />
+                                        <span className="text-sm font-semibold text-blue-400">Coinbase Commerce</span>
+                                    </div>
+                                    <p className="text-sm text-neutral-400 mb-2 max-w-xs mx-auto leading-relaxed">
+                                        Donate with Coinbase, MetaMask, or any crypto wallet
+                                    </p>
+                                    <p className="text-xs text-neutral-500">
+                                        Secure checkout • Multiple cryptocurrencies supported
+                                    </p>
+                                </div>
+
+                                {/* CTA Button */}
+                      <Button
+                        onClick={() => {
+                          trackEvent('click_coinbase_checkout', { location: 'donate_section', method: 'crypto' });
+                          trackEvent('click_external_link', { url: COINBASE_CHECKOUT_URL, type: 'donation', platform: 'coinbase' });
+                          window.open(COINBASE_CHECKOUT_URL, '_blank');
+                        }}
+                                    className="w-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center gap-2 py-6 sm:py-7 text-base sm:text-lg rounded-xl shadow-lg hover:shadow-blue-500/20 transition-all group mb-4 touch-manipulation min-h-[56px] font-semibold"
+                                >
+                                    <Wallet className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                    Donate with Coinbase
+                                    <ExternalLink className="w-4 h-4 opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                                </Button>
+
+                                {/* Supported Wallets Info */}
+                                <div className="mt-4 p-3 rounded-lg bg-neutral-900/50 border border-neutral-800 w-full max-w-sm">
+                                    <p className="text-xs text-neutral-500 text-center leading-relaxed">
+                                        <span className="text-neutral-400 font-medium">Supported:</span> Coinbase Wallet, MetaMask, Smart Wallets, and more
+                                    </p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {/* Direct Crypto Method */}
+                    {cryptoMethod === 'direct' && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="animate-in fade-in slide-in-from-bottom-2 duration-300"
+                        >
+                            <Tabs defaultValue="BTC" className="w-full" onValueChange={(val) => trackEvent('crypto_tab_change', { currency: val })}>
+                                <TabsList className="grid w-full grid-cols-3 bg-neutral-950 p-1 rounded-lg mb-4 sm:mb-6 border border-neutral-800 h-10 sm:h-9">
+                                    <TabsTrigger value="BTC" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">BTC</TabsTrigger>
+                                    <TabsTrigger value="ETH" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">ETH</TabsTrigger>
+                                    <TabsTrigger value="USDT" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">USDT</TabsTrigger>
+                                </TabsList>
+                                <div className="relative min-h-[180px]">
+                                    <TabsContent value="BTC" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                        <CryptoAddress currency="BTC" address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" />
+                                    </TabsContent>
+                                    <TabsContent value="ETH" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                        <CryptoAddress currency="ETH" address="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb" />
+                                    </TabsContent>
+                                    <TabsContent value="USDT" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                        <CryptoAddress currency="USDT" address="TYASr6cqzx4kWyBz2m8s2um4VdJgFmWJkB" />
+                                    </TabsContent>
+                                </div>
+                            </Tabs>
+                        </motion.div>
+                    )}
                 </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

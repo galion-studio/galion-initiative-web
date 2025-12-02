@@ -11,6 +11,7 @@ import Donate from '@/components/sections/Donate';
 import JoinTeam from '@/components/sections/JoinTeam';
 import Newsletter from '@/components/sections/Newsletter';
 import Footer from '@/components/sections/Footer';
+import SectionDivider from '@/components/shared/SectionDivider';
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -69,10 +70,15 @@ export default function Home() {
       />
 
       <Hero />
+      <SectionDivider />
       <Mission />
+      <SectionDivider />
       <Blueprint />
+      <SectionDivider />
       <Donate />
+      <SectionDivider />
       <JoinTeam />
+      <SectionDivider />
       <Newsletter />
       <Footer />
 

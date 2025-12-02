@@ -94,6 +94,43 @@ const departments = Object.keys(groupedMembers);
 export default function TeamPage() {
   return (
     <main className="min-h-screen bg-neutral-950 text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            "name": "Our Team",
+            "description": "Meet the researchers, engineers, and policy experts building safe superintelligence at The Galion Initiative.",
+            "mainEntity": {
+              "@type": "Organization",
+              "name": "The Galion Initiative",
+              "url": "https://galioninitiative.org",
+              "logo": "https://galioninitiative.org/logo.webp"
+            }
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [{
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://galioninitiative.org"
+            },{
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Our Team",
+              "item": "https://galioninitiative.org/team"
+            }]
+          })
+        }}
+      />
       {/* Top Navigation */}
       <div className="sticky top-0 z-30 bg-neutral-950/80 backdrop-blur-xl border-b border-neutral-800">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -115,12 +152,12 @@ export default function TeamPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-3xl mx-auto text-center"
+            className="max-w-3xl mx-auto text-center overflow-visible"
           >
             <span className="text-primary-400 font-bold tracking-widest uppercase text-xs mb-4 block">
               Our Team
             </span>
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 px-2">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 px-2 leading-[1.3] sm:leading-[1.3] md:leading-[1.25] pb-3 sm:pb-4">
               Meet the Minds Building Safe Superintelligence
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-neutral-400 leading-relaxed font-light px-2">
@@ -188,7 +225,10 @@ export default function TeamPage() {
                             rel="noopener noreferrer"
                             className="text-neutral-500 hover:text-primary-400 transition-colors p-2 -m-2 touch-manipulation"
                             aria-label={`${member.name} LinkedIn`}
-                            onClick={() => trackEvent('click_team_social', { member: member.name, platform: 'linkedin', location: 'team_page' })}
+                            onClick={(e) => {
+                              trackEvent('click_team_social', { member: member.name, platform: 'linkedin', location: 'team_page' });
+                              trackEvent('click_external_link', { url: member.linkedin, type: 'social', platform: 'linkedin', location: 'team_page' });
+                            }}
                           >
                             <Linkedin className="w-5 h-5 sm:w-6 sm:h-6" />
                           </a>
@@ -200,7 +240,10 @@ export default function TeamPage() {
                             rel="noopener noreferrer"
                             className="text-neutral-500 hover:text-primary-400 transition-colors p-2 -m-2 touch-manipulation"
                             aria-label={`${member.name} Twitter`}
-                            onClick={() => trackEvent('click_team_social', { member: member.name, platform: 'twitter', location: 'team_page' })}
+                            onClick={(e) => {
+                              trackEvent('click_team_social', { member: member.name, platform: 'twitter', location: 'team_page' });
+                              trackEvent('click_external_link', { url: member.twitter, type: 'social', platform: 'twitter', location: 'team_page' });
+                            }}
                           >
                             <Twitter className="w-5 h-5 sm:w-6 sm:h-6" />
                           </a>
@@ -212,7 +255,10 @@ export default function TeamPage() {
                             rel="noopener noreferrer"
                             className="text-neutral-500 hover:text-primary-400 transition-colors p-2 -m-2 touch-manipulation"
                             aria-label={`${member.name} GitHub`}
-                            onClick={() => trackEvent('click_team_social', { member: member.name, platform: 'github', location: 'team_page' })}
+                            onClick={(e) => {
+                              trackEvent('click_team_social', { member: member.name, platform: 'github', location: 'team_page' });
+                              trackEvent('click_external_link', { url: member.github, type: 'social', platform: 'github', location: 'team_page' });
+                            }}
                           >
                             <Github className="w-5 h-5 sm:w-6 sm:h-6" />
                           </a>

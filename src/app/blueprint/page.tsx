@@ -19,6 +19,55 @@ const PDFViewer = dynamic(() => import('@/components/pdf/PDFViewer'), {
 export default function BlueprintPage() {
   return (
     <main className="min-h-screen bg-neutral-950 text-white flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "TechArticle",
+            "headline": "The Galion Blueprint V2.0",
+            "description": "Our comprehensive technical architecture for safe superintelligence. Details the dual-core alignment protocols and hardware-level safety constraints.",
+            "author": {
+              "@type": "Organization",
+              "name": "The Galion Initiative"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "The Galion Initiative",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://galioninitiative.org/logo.webp"
+              }
+            },
+            "datePublished": "2025-01-01",
+            "dateModified": "2025-01-01",
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": "https://galioninitiative.org/blueprint"
+            }
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [{
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://galioninitiative.org"
+            },{
+              "@type": "ListItem",
+              "position": 2,
+              "name": "The Blueprint",
+              "item": "https://galioninitiative.org/blueprint"
+            }]
+          })
+        }}
+      />
         {/* Top Navigation */}
         <div className="sticky top-0 z-30 bg-neutral-950/80 backdrop-blur-xl border-b border-neutral-800">
             <div className="container mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2">

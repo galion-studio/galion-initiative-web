@@ -6,7 +6,7 @@ import { trackEvent } from '@/lib/analytics';
 
 export default function Footer() {
   return (
-    <footer className="relative bg-neutral-950 text-neutral-400 border-t border-neutral-900 text-sm overflow-hidden">
+    <footer className="relative bg-neutral-950 text-neutral-400 text-sm overflow-hidden">
         {/* Ambient Glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary-900/10 blur-[120px] rounded-full pointer-events-none" />
 

@@ -29,6 +29,7 @@ export default function JoinTeam() {
 
   async function onSubmit(data: JoinTeamValues) {
     setIsSubmitting(true);
+    trackEvent('join_team_submit_attempt', { expertise: data.expertise });
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -41,9 +42,12 @@ export default function JoinTeam() {
       toast.success("Application Received", {
         description: "We'll be in touch if your profile matches our needs."
       });
-      trackEvent('join_team_submit', { expertise: data.expertise });
+      trackEvent('join_team_submit', { expertise: data.expertise, success: true });
+      trackEvent('join_team_submit_success', { expertise: data.expertise });
       form.reset();
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      trackEvent('join_team_submit_error', { expertise: data.expertise, error: errorMessage });
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -70,7 +74,7 @@ export default function JoinTeam() {
   ];
 
   return (
-    <section id="join-team" className="py-20 sm:py-24 md:py-32 bg-neutral-950 text-neutral-50 relative overflow-hidden">
+    <section id="join-team" className="py-24 sm:py-28 md:py-32 bg-neutral-950 text-neutral-50 relative overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.03]" />
       <div className="absolute bottom-0 right-0 w-[800px] h-[600px] bg-primary-900/10 blur-[120px] rounded-full pointer-events-none" />
@@ -79,16 +83,40 @@ export default function JoinTeam() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-24 items-start">
           
           {/* Left Column: Context */}
-          <div className="pt-4 sm:pt-8 text-center lg:text-left">
-            <span className="text-primary-400 font-bold tracking-widest uppercase text-xs mb-4 block">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="pt-4 sm:pt-8 text-center lg:text-left"
+          >
+            <motion.span 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-primary-400 font-bold tracking-widest uppercase text-xs mb-4 block"
+            >
               Recruitment
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+            </motion.span>
+            <motion.h2 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70"
+            >
               Join the Mission
-            </h2>
-            <p className="text-lg sm:text-xl text-neutral-400 mb-8 sm:mb-12 font-light leading-relaxed">
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-lg sm:text-xl text-neutral-400 mb-8 sm:mb-12 font-light leading-relaxed"
+            >
               We are assembling a task force of exceptional minds to solve the most critical engineering challenge in human history.
-            </p>
+            </motion.p>
             
             <div className="space-y-4 sm:space-y-6">
               {roles.map((item, i) => (
@@ -110,15 +138,27 @@ export default function JoinTeam() {
               ))}
             </div>
             
-            <div className="mt-8 sm:mt-12 p-4 sm:p-6 bg-neutral-900/50 border border-neutral-800 rounded-xl backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="mt-8 sm:mt-12 p-4 sm:p-6 bg-neutral-900/50 border border-neutral-800 rounded-xl backdrop-blur-sm"
+            >
                 <p className="text-sm text-neutral-400 italic">
                     "If you're committed to ensuring superintelligence benefits all humanity—let's talk."
                 </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Column: Form */}
-          <div className="relative">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative"
+          >
             {/* Form Glow */}
             <div className="absolute -inset-1 bg-gradient-to-r from-primary-500/20 to-primary-900/20 rounded-2xl blur opacity-50" />
             
@@ -231,7 +271,7 @@ export default function JoinTeam() {
                 </form>
               </Form>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

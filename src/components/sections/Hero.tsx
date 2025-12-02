@@ -14,6 +14,21 @@ export default function Hero() {
     }
   };
 
+  const scrollToDonate = () => {
+    trackEvent('click_support_mission', { location: 'hero_section' });
+    const element = document.getElementById('donate');
+    if (element) {
+      // Add offset to account for any fixed headers
+      const offset = 0;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-neutral-950 text-white selection:bg-primary-500/30">
       {/* Modern Background Effects */}
@@ -56,7 +71,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="max-w-4xl text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 sm:mb-7 md:mb-8 leading-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-white/95 to-neutral-400 px-3 sm:px-4"
+          className="max-w-4xl text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 sm:mb-7 md:mb-8 leading-[1.2] sm:leading-[1.2] md:leading-[1.15] lg:leading-[1.15] bg-clip-text text-transparent bg-gradient-to-b from-white via-white/95 to-neutral-400 px-3 sm:px-4 pb-1"
         >
           Building Safe Superintelligence for Humanity
         </motion.h1>
@@ -92,7 +107,7 @@ export default function Hero() {
             variant="outline" 
             size="lg" 
             className="border-neutral-700 bg-neutral-900/50 hover:bg-neutral-800 hover:border-neutral-600 text-neutral-200 hover:text-white text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-5 sm:py-6 md:py-7 rounded-full backdrop-blur-sm transition-all duration-300 w-full sm:w-auto touch-manipulation"
-            onClick={scrollToMission}
+            onClick={scrollToDonate}
           >
             Support the Mission
           </Button>
