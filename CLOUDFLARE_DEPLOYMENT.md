@@ -55,7 +55,7 @@ If you can't find the Pages option in the unified interface:
 - The existing Worker project won't work for Next.js - you need a Pages project
 - You can delete the Worker project later if you want (it won't affect your Pages project)
 
-## Step 3: Configure Build Settings
+## Step 3: Configure Build Settings yeet the change 
 
 In the **Build configuration** section, use these settings:
 
