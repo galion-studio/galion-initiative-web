@@ -84,22 +84,22 @@ export default function Donate() {
                 >
                   <div className={`relative group h-full rounded-xl p-[1px] transition-all duration-300 ${tier.highlight ? 'bg-gradient-to-br from-primary-500/40 to-primary-900/10' : 'bg-neutral-800/50 hover:bg-neutral-700/50'}`}>
                     <Card className={`h-full bg-neutral-950/80 backdrop-blur-sm border-none shadow-lg ${tier.highlight ? '' : ''} transition-colors`}>
-                      <CardHeader className="pb-2 pt-5 px-5 text-center sm:text-left">
+                      <CardHeader className="pb-3 pt-6 px-6 text-center sm:text-left">
                         <div className="flex justify-center sm:justify-between items-start">
                           <div>
-                            <CardTitle className="text-base font-bold text-white flex items-center justify-center sm:justify-start gap-2">
-                              <span className="text-xl filter drop-shadow-md">{tier.icon}</span> 
+                            <CardTitle className="text-lg sm:text-xl font-bold text-white flex items-center justify-center sm:justify-start gap-2">
+                              <span className="text-2xl sm:text-3xl filter drop-shadow-md">{tier.icon}</span> 
                               {tier.name}
                             </CardTitle>
-                            <div className="text-primary-400 font-mono text-xs mt-1 tracking-wide font-semibold text-center sm:text-left">{tier.amount}</div>
+                            <div className="text-primary-400 font-mono text-sm sm:text-base mt-2 tracking-wide font-semibold text-center sm:text-left">{tier.amount}</div>
                           </div>
                         </div>
                       </CardHeader>
-                      <CardContent className="px-5 pb-5">
-                        <ul className="space-y-2">
+                      <CardContent className="px-6 pb-6">
+                        <ul className="space-y-2.5">
                           {tier.benefits.map((benefit, i) => (
-                            <li key={i} className="text-xs text-neutral-400 flex items-start justify-center sm:justify-start gap-2 group-hover:text-neutral-300 transition-colors">
-                              <span className="text-primary-500 mt-0.5">•</span>
+                            <li key={i} className="text-sm sm:text-base text-neutral-400 flex items-start justify-center sm:justify-start gap-2.5 group-hover:text-neutral-300 transition-colors">
+                              <span className="text-primary-500 mt-0.5 text-base">•</span>
                               <span>{benefit}</span>
                             </li>
                           ))}
