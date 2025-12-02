@@ -38,14 +38,14 @@ In the **Build configuration** section, use these settings:
 - **Build command**: `npm run build`
 - **Build output directory**: `.next` 
 - **Root directory**: `/` (leave as default)
-- **Deploy command**: **LEAVE EMPTY** or **REMOVE** if it says `npx wrangler deploy`
+- **Deploy command**: If the field is **required**, use: `npx wrangler pages deploy .next --project-name=galion-initiative-web`
 - **Node.js version**: `20` (set in environment variables)
 
-**⚠️ CRITICAL - FIX DEPLOYMENT ERROR**: 
-- **DO NOT** set a "Deploy command" - Cloudflare Pages handles deployment automatically
-- If you see a deploy command field with `npx wrangler deploy`, you **MUST remove it** or leave it completely empty
-- Cloudflare Pages will automatically deploy the `.next` directory after the build completes
-- The `npx wrangler deploy` command is for Cloudflare Workers, NOT Cloudflare Pages
+**⚠️ IMPORTANT**: 
+- If the "Deploy command" field is **optional**, leave it empty - Cloudflare Pages will deploy automatically
+- If the "Deploy command" field is **required**, use the command above
+- Replace `galion-initiative-web` with your actual Cloudflare Pages project name if different
+- The `wrangler pages deploy` command is specifically for Cloudflare Pages (not Workers)
 
 ### Environment Variables:
 Add the following environment variables in the **Environment variables** section:
@@ -141,11 +141,12 @@ The build process will:
 ### Troubleshooting
 
 **Build succeeds but deployment fails with "Missing entry-point to Worker script"**:
-- **This is the most common issue**: You have a "Deploy command" set in Cloudflare Pages settings
+- **Issue**: The deploy command is using `wrangler deploy` instead of `wrangler pages deploy`
 - **Solution**: Go to your Cloudflare Pages project → **Settings** → **Builds & deployments**
-- Remove or clear the "Deploy command" field (it should be empty)
-- Cloudflare Pages will automatically deploy after the build - no custom deploy command needed
+- Update the "Deploy command" to: `npx wrangler pages deploy .next --project-name=galion-initiative-web`
+- Replace `galion-initiative-web` with your actual project name
 - Save the settings and trigger a new deployment
+- **Note**: If the deploy command field is optional, you can also try leaving it empty
 
 **Build fails with "Module not found"**:
 - Ensure all dependencies are in `package.json`
