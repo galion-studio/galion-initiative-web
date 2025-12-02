@@ -97,11 +97,6 @@ export default function PrivacyPolicy() {
               <a 
                 href="mailto:contact@galioninitiative.org" 
                 className="text-primary-400 hover:underline break-all"
-                onClick={() => {
-                  if (typeof window !== 'undefined' && window.zaraz) {
-                    window.zaraz.track('click_email', { email: 'contact', location: 'privacy_page' });
-                  }
-                }}
               >
                 contact@galioninitiative.org
               </a>.

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, type ButtonProps as BaseButtonProps } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { trackEvent } from '@/lib/analytics';
 import { ReactNode, ComponentPropsWithoutRef } from 'react';
 
