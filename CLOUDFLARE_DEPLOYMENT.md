@@ -20,37 +20,70 @@ git push origin main
 
 ## Step 2: Connect Repository to Cloudflare Pages
 
+**⚠️ CRITICAL - IMPORTANT DISTINCTION**:
+- **Cloudflare Pages** = For hosting Next.js apps and static websites (THIS IS WHAT YOU NEED)
+- **Cloudflare Workers** = For serverless functions/edge computing (NOT for Next.js apps)
+- In the unified "Workers & Pages" interface, you must specifically create a **Pages** project, not a Worker
+
+### Option 1: Via Cloudflare Dashboard (Recommended)
+
 1. Log in to your [Cloudflare Dashboard](https://dash.cloudflare.com)
-2. Navigate to **Pages** in the sidebar
-3. Click **Create a project**
-4. Click **Connect to Git**
-5. Select your Git provider (GitHub, GitLab, or Bitbucket)
-6. Authorize Cloudflare to access your repositories
-7. Select the `galion-initiative-web` repository
-8. Click **Begin setup**
+2. Navigate to **Workers & Pages** in the sidebar (under "Compute & AI")
+3. Click **Create application** button (top right, blue button)
+4. In the modal that appears, look for tabs or options - you should see:
+   - **Workers** tab (for serverless functions)
+   - **Pages** tab (for websites/Next.js apps) ← **SELECT THIS ONE**
+5. Click on the **Pages** tab/option
+6. Click **Connect to Git**
+7. Select your Git provider (GitHub, GitLab, or Bitbucket)
+8. Authorize Cloudflare to access your repositories
+9. Select the `galion-initiative-web` repository
+10. Click **Begin setup**
+
+### Option 2: Direct Pages URL
+
+If you can't find the Pages option in the unified interface:
+
+1. Go directly to: `https://dash.cloudflare.com/[your-account-id]/pages`
+   - Replace `[your-account-id]` with your account ID (visible in your dashboard URL)
+2. Or try: `https://pages.cloudflare.com` and sign in
+3. Click **Create a project** or **Connect to Git**
+4. Follow the Git connection steps above
+
+**If you accidentally created a Worker instead of a Pages project:**
+- You need to create a NEW Pages project (Workers and Pages are separate, even in the unified interface)
+- The existing Worker project won't work for Next.js - you need a Pages project
+- You can delete the Worker project later if you want (it won't affect your Pages project)
 
 ## Step 3: Configure Build Settings
 
 In the **Build configuration** section, use these settings:
 
 ### Build Settings:
-- **Framework preset**: `Next.js` (Cloudflare Pages should auto-detect)
+- **Framework preset**: **MUST be explicitly set to `Next.js`** ⚠️ CRITICAL - Do not rely on auto-detection!
 - **Build command**: `npm run build`
-- **Build output directory**: **Leave empty or use default** - Cloudflare Pages automatically detects Next.js and uses the correct output directory
+- **Build output directory**: Try `.next` first. If that doesn't work, leave it empty
 - **Root directory**: `/` (leave as default)
-- **Deploy command**: **Leave it completely empty** - Cloudflare Pages with Git integration deploys automatically
+- **Deploy command**: `echo "Deployment handled by Cloudflare Pages"` (or leave empty if possible)
 - **Node.js version**: `20` (set in environment variables)
+
+**⚠️ CRITICAL - FRAMEWORK PRESET**: 
+- **You MUST explicitly set Framework preset to `Next.js`** in the Cloudflare Pages dashboard
+- If Framework preset is not set or is set to "None", Cloudflare Pages will show "Hello World" instead of your app
+- Go to: **Settings** → **Builds & deployments** → **Framework preset** → Select `Next.js`
+- This is the #1 cause of "Hello World" appearing on deployed sites
 
 **⚠️ IMPORTANT**: 
 - Do NOT set `output: 'standalone'` in `next.config.ts` - this is for self-hosting, not Cloudflare Pages
-- Cloudflare Pages will automatically use the Next.js runtime when it detects a Next.js project
-- The build output directory should be left empty to let Cloudflare Pages handle it automatically
+- Cloudflare Pages needs the Framework preset to properly serve Next.js applications
 
 **⚠️ CRITICAL - DEPLOYMENT ISSUE**: 
 - **For Git-integrated Cloudflare Pages**: The deploy command should be **EMPTY** - Cloudflare Pages automatically deploys after the build
-- If the field is **required** and won't accept empty, try using: `echo "Deployment handled by Cloudflare Pages"`
-- **DO NOT** use `wrangler pages deploy` in Git-integrated deployments - it causes authentication errors
+- If the field is **required** and won't accept empty, use: `echo "Deployment handled by Cloudflare Pages"`
+- **DO NOT** use `npx wrangler deploy` - this is for Workers, not Pages, and will cause errors
+- **DO NOT** use `wrangler pages deploy` - this causes authentication errors in Git-integrated deployments
 - Cloudflare Pages with Git integration handles deployment automatically - no manual deploy command needed
+- If you see "Missing entry-point to Worker script" error, it means your deploy command is trying to deploy as a Worker instead of Pages
 
 ### Environment Variables:
 Add the following environment variables in the **Environment variables** section:
@@ -159,10 +192,15 @@ The build process will:
 - Check that `node_modules` is in `.gitignore`
 - Verify `package-lock.json` is committed
 
-**Build succeeds but site doesn't load**:
-- Check the build output directory is correct (`.next`)
+**Build succeeds but site shows "Hello World" or doesn't load**:
+- **CRITICAL**: Go to your Cloudflare Pages project → **Settings** → **Builds & deployments**
+- **Framework preset**: Must be explicitly set to `Next.js` (don't rely on auto-detection)
+- **Build output directory**: Try setting it to `.next` explicitly (even though docs say to leave empty, sometimes explicit is needed)
+- If `.next` doesn't work, try leaving it empty again and ensure Framework preset is `Next.js`
+- **Clear build cache**: Go to **Settings** → **Builds & deployments** → **Clear build cache** and redeploy
 - Verify environment variables are set
 - Check browser console for errors
+- Make sure `next.config.ts` does NOT have `output: 'standalone'` (we already fixed this)
 
 **PDF not loading**:
 - Ensure `public/blueprint.pdf` is committed to the repository

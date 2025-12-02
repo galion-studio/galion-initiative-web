@@ -1,6 +1,8 @@
 import { ImageResponse } from 'next/og';
  
-export const runtime = 'edge';
+// Force static generation for static export compatibility
+// This tells Next.js to generate this image at build time
+export const dynamic = 'force-static';
  
 export const alt = 'The Galion Initiative - Building Safe Superintelligence';
 export const size = {
@@ -11,22 +13,9 @@ export const size = {
 export const contentType = 'image/png';
  
 export default async function Image() {
-  // Attempt to load the logo (Note: In edge runtime, filesystem access is limited. 
-  // We use the deployed URL or a relative fetch if possible. 
-  // For robustness in this environment without complex setup, we'll use a fetch to the public URL if it were absolute, 
-  // but simpler is to rely on the SVG fallback if fetch fails, or just use the SVG which is guaranteed to work and looks clean.
-  // However, since we have the logo, let's try to fetch it from the project structure.)
-  
-  let logoData: ArrayBuffer | null = null;
-  try {
-      // In Next.js Edge, we can import assets or fetch them. 
-      // Fetching from the public URL requires the full URL.
-      // We will fallback to the geometric SVG which looks professional if image loading is complex in this specific env.
-      // But let's try to use the fetch approach with import.meta.url
-      logoData = await fetch(new URL('../../public/logo.webp', import.meta.url)).then((res) => res.arrayBuffer());
-  } catch (e) {
-      console.error('Failed to load logo for OG image', e);
-  }
+  // For static export, we use the SVG fallback logo
+  // ImageResponse doesn't support WebP format, and the SVG looks professional
+  // This ensures the OpenGraph image generates correctly during static export
 
   return new ImageResponse(
     (
@@ -72,7 +61,7 @@ export default async function Image() {
             }}
         />
 
-        {/* Logo */}
+        {/* Logo - Using SVG for static export compatibility */}
         <div
           style={{
             display: 'flex',
@@ -83,14 +72,10 @@ export default async function Image() {
             marginBottom: '40px',
           }}
         >
-             {logoData ? (
-                 <img src={logoData as any} width="120" height="120" style={{ objectFit: 'contain' }} />
-             ) : (
-                /* Fallback Geometric Logo */
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
-             )}
+          {/* Geometric Logo - SVG works perfectly with ImageResponse and static export */}
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
         </div>
 
         <div
