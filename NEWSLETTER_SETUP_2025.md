@@ -17,7 +17,7 @@ The newsletter system uses **Cloudflare D1** database with:
 
 1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
 2. Navigate to **Workers & Pages** → **D1**
-3. Create or verify your database exists (e.g., `galion-newsletter`)
+3. Create or verify your database exists (e.g., `galion-newsletter2`)
 4. Run the schema from `schema.sql` in the D1 Console
 
 ### Step 2: Bind D1 to Your Pages Project

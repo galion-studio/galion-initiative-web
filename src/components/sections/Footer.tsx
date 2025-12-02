@@ -23,40 +23,43 @@ export default function Footer() {
             <p className="text-neutral-500 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8 max-w-md mx-auto sm:mx-0 font-light">
               An independent nonprofit research organization dedicated to ensuring artificial superintelligence is developed safely and for the benefit of all humanity.
             </p>
-            <div className="flex gap-3 sm:gap-4 justify-center sm:justify-start">
-              <a 
-                href="#" 
-                className="p-2.5 sm:p-3 bg-neutral-900 rounded-full hover:bg-neutral-800 hover:text-white transition-all border border-neutral-800 hover:border-neutral-700 group touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center" 
-                aria-label="Twitter"
-                onClick={(e) => {
-                  e.preventDefault();
-                  trackEvent('click_social_link', { platform: 'twitter', location: 'footer' });
-                }}
-              >
-                <Twitter className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-              </a>
-              <a 
-                href="#" 
-                className="p-2.5 sm:p-3 bg-neutral-900 rounded-full hover:bg-neutral-800 hover:text-white transition-all border border-neutral-800 hover:border-neutral-700 group touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center" 
-                aria-label="GitHub"
-                onClick={(e) => {
-                  e.preventDefault();
-                  trackEvent('click_social_link', { platform: 'github', location: 'footer' });
-                }}
-              >
-                <Github className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-              </a>
-              <a 
-                href="#" 
-                className="p-2.5 sm:p-3 bg-neutral-900 rounded-full hover:bg-neutral-800 hover:text-white transition-all border border-neutral-800 hover:border-neutral-700 group touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center" 
-                aria-label="LinkedIn"
-                onClick={(e) => {
-                  e.preventDefault();
-                  trackEvent('click_social_link', { platform: 'linkedin', location: 'footer' });
-                }}
-              >
-                <Linkedin className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-              </a>
+            <div className="flex flex-col items-center sm:items-start gap-2">
+              <div className="flex gap-3 sm:gap-4 justify-center sm:justify-start">
+                <a 
+                  href="#" 
+                  className="p-2.5 sm:p-3 bg-neutral-900 rounded-full hover:bg-neutral-800 hover:text-white transition-all border border-neutral-800 hover:border-neutral-700 group touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center" 
+                  aria-label="Twitter"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    trackEvent('click_social_link', { platform: 'twitter', location: 'footer' });
+                  }}
+                >
+                  <Twitter className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
+                </a>
+                <a 
+                  href="#" 
+                  className="p-2.5 sm:p-3 bg-neutral-900 rounded-full hover:bg-neutral-800 hover:text-white transition-all border border-neutral-800 hover:border-neutral-700 group touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center" 
+                  aria-label="GitHub"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    trackEvent('click_social_link', { platform: 'github', location: 'footer' });
+                  }}
+                >
+                  <Github className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
+                </a>
+                <a 
+                  href="#" 
+                  className="p-2.5 sm:p-3 bg-neutral-900 rounded-full hover:bg-neutral-800 hover:text-white transition-all border border-neutral-800 hover:border-neutral-700 group touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center" 
+                  aria-label="LinkedIn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    trackEvent('click_social_link', { platform: 'linkedin', location: 'footer' });
+                  }}
+                >
+                  <Linkedin className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
+                </a>
+              </div>
+              <p className="text-xs text-primary-400/70 font-light">Coming soon.</p>
             </div>
           </div>
 

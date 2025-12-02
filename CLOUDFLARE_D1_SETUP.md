@@ -13,7 +13,7 @@ Cloudflare D1 is a serverless SQLite database that runs on Cloudflare's global n
 3. In the left sidebar, click **Workers & Pages**
 4. Click on the **D1** tab
 5. Click **Create database**
-6. Enter a database name: `galion-newsletter` (or any name you prefer)
+6. Enter a database name: `galion-newsletter2` (or any name you prefer)
 7. Select a location (choose closest to your users)
 8. Click **Create**
 
@@ -48,7 +48,7 @@ CREATE INDEX IF NOT EXISTS idx_subscribed_at ON newsletter_subscribers(subscribe
 4. Click **Add binding**
 5. Enter:
    - **Variable name**: `DB` (must match the code)
-   - **D1 database**: Select your database (e.g., `galion-newsletter`)
+   - **D1 database**: Select your database (e.g., `galion-newsletter2`)
 6. Click **Save**
 
 ## Step 4: Deploy Your Changes

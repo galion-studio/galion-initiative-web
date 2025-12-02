@@ -109,33 +109,33 @@ export default function CryptoAddress({ currency, address, qrUrl, comingSoon = f
           <>
             <div 
                 className="group/input relative flex items-center gap-2 bg-neutral-950 rounded-xl p-2 border-2 border-neutral-800 transition-all duration-300 hover:border-primary-500/50 hover:shadow-[0_0_25px_rgba(14,165,233,0.15)] cursor-pointer overflow-hidden"
-                onClick={handleCopy}
-            >
+            onClick={handleCopy}
+        >
                 <div className="flex-1 px-4 py-3 min-w-0">
                     <code 
                         className="block text-sm sm:text-base font-mono text-neutral-300 group-hover/input:text-white transition-colors text-center break-all"
                         title={address}
                     >
                         {formatAddress(address || '')}
-                    </code>
-                </div>
-                
+                </code>
+            </div>
+            
                 <div className="h-10 w-[1px] bg-neutral-800 group-hover/input:bg-neutral-700 transition-colors" />
-                
-                <Button
-                    size="icon"
-                    variant="ghost"
+            
+            <Button
+                size="icon"
+                variant="ghost"
                     className={`h-10 w-10 shrink-0 rounded-lg transition-all duration-300 ${
                         copied 
                             ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
                             : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
                     }`}
-                    aria-label="Copy address"
-                >
+                aria-label="Copy address"
+            >
                     {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                </Button>
-            </div>
-            
+            </Button>
+        </div>
+        
             {/* Helper Text */}
             <div className="flex flex-col items-center gap-2 mt-4">
                 <div className="flex items-center gap-1.5 text-neutral-500">
@@ -162,8 +162,8 @@ export default function CryptoAddress({ currency, address, qrUrl, comingSoon = f
             <div className="mt-4 p-3 rounded-lg bg-neutral-900/50 border border-neutral-800">
                 <p className="text-xs text-neutral-500 text-center leading-relaxed">
                     ⚠️ Always verify the address before sending. Double-check the first and last few characters.
-                </p>
-            </div>
+             </p>
+        </div>
           </>
         )}
       </div>
