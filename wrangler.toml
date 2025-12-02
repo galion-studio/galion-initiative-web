@@ -1,5 +1,7 @@
-# Cloudflare Pages configuration for local development
-# This file allows you to test Cloudflare Functions locally using Wrangler
+# Cloudflare Pages configuration
+# This file is used by Cloudflare Pages to configure the build output directory
+# For D1 database bindings, configure them in Cloudflare Dashboard:
+# Pages Project → Settings → Functions → D1 database bindings
 
 name = "galion-initiative-web"
 compatibility_date = "2024-12-01"
@@ -7,14 +9,8 @@ compatibility_date = "2024-12-01"
 # Pages configuration
 pages_build_output_dir = "out"
 
-# D1 Database binding (for local development)
-# You'll need to create a local D1 database or use a remote one
-# To create a local D1 database: wrangler d1 create galion-newsletter --local
-[[d1_databases]]
-binding = "DB"
-database_name = "galion-newsletter"
-database_id = "local"  # Use "local" for local development
-
-# For production, the database binding is configured in Cloudflare Dashboard
-# This file is mainly for local development with Wrangler
+# Note: D1 database bindings should be configured in Cloudflare Dashboard, not here
+# For local development with Wrangler, create a local database and bind it via CLI:
+# npx wrangler d1 execute galion-newsletter --local --file=schema.sql
+# Then use: npx wrangler pages dev out --d1=DB=galion-newsletter --local
 
