@@ -38,14 +38,14 @@ In the **Build configuration** section, use these settings:
 - **Build command**: `npm run build`
 - **Build output directory**: `.next` 
 - **Root directory**: `/` (leave as default)
-- **Deploy command**: If the field is **required**, use: `npx wrangler pages deploy .next --project-name=galion-initiative-web`
+- **Deploy command**: **Try leaving it empty first** - Cloudflare Pages with Git integration deploys automatically
 - **Node.js version**: `20` (set in environment variables)
 
-**⚠️ IMPORTANT**: 
-- If the "Deploy command" field is **optional**, leave it empty - Cloudflare Pages will deploy automatically
-- If the "Deploy command" field is **required**, use the command above
-- Replace `galion-initiative-web` with your actual Cloudflare Pages project name if different
-- The `wrangler pages deploy` command is specifically for Cloudflare Pages (not Workers)
+**⚠️ CRITICAL - DEPLOYMENT ISSUE**: 
+- **For Git-integrated Cloudflare Pages**: The deploy command should be **EMPTY** - Cloudflare Pages automatically deploys after the build
+- If the field is **required** and won't accept empty, try using: `echo "Deployment handled by Cloudflare Pages"`
+- **DO NOT** use `wrangler pages deploy` in Git-integrated deployments - it causes authentication errors
+- Cloudflare Pages with Git integration handles deployment automatically - no manual deploy command needed
 
 ### Environment Variables:
 Add the following environment variables in the **Environment variables** section:
@@ -140,13 +140,14 @@ The build process will:
 
 ### Troubleshooting
 
-**Build succeeds but deployment fails with "Missing entry-point to Worker script"**:
-- **Issue**: The deploy command is using `wrangler deploy` instead of `wrangler pages deploy`
+**Build succeeds but deployment fails with authentication error**:
+- **Issue**: Using `wrangler pages deploy` in Git-integrated Cloudflare Pages causes authentication errors
+- **Root cause**: Cloudflare Pages with Git integration handles deployment automatically - no deploy command needed
 - **Solution**: Go to your Cloudflare Pages project → **Settings** → **Builds & deployments**
-- Update the "Deploy command" to: `npx wrangler pages deploy .next --project-name=galion-initiative-web`
-- Replace `galion-initiative-web` with your actual project name
+- **Remove or clear the "Deploy command" field** - leave it completely empty
+- If the field is required and won't accept empty, try: `echo "Deployment handled by Cloudflare Pages"`
 - Save the settings and trigger a new deployment
-- **Note**: If the deploy command field is optional, you can also try leaving it empty
+- **Important**: Git-integrated Pages deployments don't need a deploy command - Cloudflare handles it automatically after the build
 
 **Build fails with "Module not found"**:
 - Ensure all dependencies are in `package.json`
