@@ -1,6 +1,32 @@
 // Cloudflare Pages Function for newsletter subscription
 // Uses Cloudflare D1 database to store newsletter subscriptions
 
+// Cloudflare D1 Database type definition
+interface D1Database {
+  prepare(query: string): D1PreparedStatement;
+  exec(query: string): Promise<D1ExecResult>;
+}
+
+interface D1PreparedStatement {
+  bind(...values: any[]): D1PreparedStatement;
+  first<T = any>(): Promise<T | null>;
+  run(): Promise<D1Result>;
+}
+
+interface D1Result {
+  success: boolean;
+  meta: {
+    changes: number;
+    last_row_id: number;
+    duration: number;
+  };
+}
+
+interface D1ExecResult {
+  count: number;
+  duration: number;
+}
+
 interface Env {
   DB: D1Database; // Cloudflare D1 database binding
   [key: string]: any;

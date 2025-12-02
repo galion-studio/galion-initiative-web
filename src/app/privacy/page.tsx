@@ -1,18 +1,9 @@
-import type { Metadata } from "next";
+'use client';
+
 import TrackedLink from '@/components/shared/TrackedLink';
 import { ArrowLeft } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Read about how The Galion Initiative collects, uses, and safeguards your personal information.",
-  openGraph: {
-    title: "Privacy Policy | The Galion Initiative",
-    url: "https://galioninitiative.org/privacy",
-  },
-  alternates: {
-    canonical: "/privacy",
-  },
-};
+// Metadata is handled in layout.tsx for client components
 
 export default function PrivacyPolicy() {
   return (
