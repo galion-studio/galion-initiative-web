@@ -12,19 +12,11 @@ compatibility_date = "2024-12-01"
 pages_build_output_dir = "out"
 
 # D1 Database binding configuration
-# Configure via Cloudflare Dashboard (preferred for security):
-# Pages Project → Settings → Functions → D1 database bindings
-# OR
-# Pages Project → Settings → Bindings → Add Binding → D1 Database Bindings
-# Variable name: DB
-# Database: galion-newsletter2
-#
-# Alternative: Uncomment below to configure via wrangler.toml
-# (Note: This exposes the database UUID in the repository)
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "galion-newsletter2"
-# database_id = "533b3203-d799-4cb3-91ea-6635eb346ea2"
+# Configured with database UUID from Cloudflare Dashboard
+[[d1_databases]]
+binding = "DB"
+database_name = "galion-newsletter2"
+database_id = "533b3203-d799-4cb3-91ea-6635eb346ea2"
 
 # Alternative: Configure via Cloudflare Dashboard (preferred if available):
 # Pages Project → Settings → Functions → D1 database bindings
