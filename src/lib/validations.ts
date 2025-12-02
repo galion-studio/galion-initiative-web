@@ -23,7 +23,7 @@ export type JoinTeamValues = z.infer<typeof joinTeamSchema>;
 export const newsletterSchema = z.object({
   email: z.string().email("Invalid email address"),
   honeypot: z.string().optional(),
-  consent: z.boolean().refine(val => val === true, "You must agree to receive updates"),
+  consent: z.boolean(), // Always set to true when subscribing (no validation needed)
 });
 
 export type NewsletterValues = z.infer<typeof newsletterSchema>;

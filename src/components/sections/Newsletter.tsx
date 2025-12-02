@@ -17,7 +17,7 @@ export default function Newsletter() {
     resolver: zodResolver(newsletterSchema),
     defaultValues: {
       email: "",
-      consent: false,
+      consent: true, // Automatically set to true
       honeypot: "",
     },
   });
@@ -27,10 +27,13 @@ export default function Newsletter() {
 
     setIsSubmitting(true);
     try {
+      // Automatically set consent to true when submitting
+      const submitData = { ...data, consent: true };
+      
       const response = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(submitData),
       });
 
       // Check if response has content before parsing
@@ -108,20 +111,9 @@ export default function Newsletter() {
             <p className="text-red-500 text-xs sm:text-sm text-left">{form.formState.errors.email.message}</p>
           )}
 
-          <div className="flex items-start justify-center gap-2 text-xs sm:text-sm text-neutral-500 px-2">
-            <input 
-              type="checkbox" 
-              id="consent"
-              {...form.register('consent')}
-              className="rounded border-neutral-700 bg-neutral-900 text-primary-500 focus:ring-primary-900 mt-0.5 w-4 h-4 sm:w-5 sm:h-5 touch-manipulation"
-            />
-            <label htmlFor="consent" className="cursor-pointer text-left">
-              I agree to receive updates from The Galion Initiative
-            </label>
-          </div>
-          {form.formState.errors.consent && (
-             <p className="text-red-500 text-xs sm:text-sm">{form.formState.errors.consent.message}</p>
-          )}
+          <p className="text-xs sm:text-sm text-neutral-500 px-2 text-center">
+            By clicking "Subscribe", I agree to receive updates from The Galion Initiative
+          </p>
 
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs text-neutral-600 pt-4 px-2">
             <span className="flex items-center gap-1">✓ No spam, ever</span>
