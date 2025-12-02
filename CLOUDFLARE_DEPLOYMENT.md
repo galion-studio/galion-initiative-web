@@ -38,9 +38,14 @@ In the **Build configuration** section, use these settings:
 - **Build command**: `npm run build`
 - **Build output directory**: `.next` 
 - **Root directory**: `/` (leave as default)
+- **Deploy command**: **LEAVE EMPTY** or **REMOVE** if it says `npx wrangler deploy`
 - **Node.js version**: `20` (set in environment variables)
 
-**Important**: Since you're using Next.js 16 with API routes, Cloudflare Pages will need to use the Next.js runtime. The build output will be in `.next` directory.
+**⚠️ CRITICAL - FIX DEPLOYMENT ERROR**: 
+- **DO NOT** set a "Deploy command" - Cloudflare Pages handles deployment automatically
+- If you see a deploy command field with `npx wrangler deploy`, you **MUST remove it** or leave it completely empty
+- Cloudflare Pages will automatically deploy the `.next` directory after the build completes
+- The `npx wrangler deploy` command is for Cloudflare Workers, NOT Cloudflare Pages
 
 ### Environment Variables:
 Add the following environment variables in the **Environment variables** section:
@@ -134,6 +139,13 @@ The build process will:
 - Create optimized production builds
 
 ### Troubleshooting
+
+**Build succeeds but deployment fails with "Missing entry-point to Worker script"**:
+- **This is the most common issue**: You have a "Deploy command" set in Cloudflare Pages settings
+- **Solution**: Go to your Cloudflare Pages project → **Settings** → **Builds & deployments**
+- Remove or clear the "Deploy command" field (it should be empty)
+- Cloudflare Pages will automatically deploy after the build - no custom deploy command needed
+- Save the settings and trigger a new deployment
 
 **Build fails with "Module not found"**:
 - Ensure all dependencies are in `package.json`
