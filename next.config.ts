@@ -2,10 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  // Optimize for Cloudflare Pages
-  output: 'standalone', // Use 'standalone' for Cloudflare Pages with Next.js runtime
-  // Or use 'export' for static export (if you don't need API routes)
-  // output: 'export',
+  // Cloudflare Pages automatically detects Next.js and handles the build
+  // No output setting needed - Cloudflare Pages will use the Next.js runtime
 };
 
 export default nextConfig;

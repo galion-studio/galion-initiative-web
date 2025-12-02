@@ -36,10 +36,15 @@ In the **Build configuration** section, use these settings:
 ### Build Settings:
 - **Framework preset**: `Next.js` (Cloudflare Pages should auto-detect)
 - **Build command**: `npm run build`
-- **Build output directory**: `.next` 
+- **Build output directory**: **Leave empty or use default** - Cloudflare Pages automatically detects Next.js and uses the correct output directory
 - **Root directory**: `/` (leave as default)
-- **Deploy command**: **Try leaving it empty first** - Cloudflare Pages with Git integration deploys automatically
+- **Deploy command**: **Leave it completely empty** - Cloudflare Pages with Git integration deploys automatically
 - **Node.js version**: `20` (set in environment variables)
+
+**⚠️ IMPORTANT**: 
+- Do NOT set `output: 'standalone'` in `next.config.ts` - this is for self-hosting, not Cloudflare Pages
+- Cloudflare Pages will automatically use the Next.js runtime when it detects a Next.js project
+- The build output directory should be left empty to let Cloudflare Pages handle it automatically
 
 **⚠️ CRITICAL - DEPLOYMENT ISSUE**: 
 - **For Git-integrated Cloudflare Pages**: The deploy command should be **EMPTY** - Cloudflare Pages automatically deploys after the build
