@@ -22,8 +22,9 @@ export default function BlueprintCard({ title, icon: Icon, summary, details, isE
   };
 
   return (
-    <div 
+    <motion.div 
       onClick={handleToggle}
+      layout
       className={`
         cursor-pointer group relative overflow-hidden rounded-xl border transition-all duration-300
         ${isExpanded 
@@ -65,7 +66,7 @@ export default function BlueprintCard({ title, icon: Icon, summary, details, isE
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="overflow-hidden"
-                  style={{ willChange: 'height' }}
+                  layout
                 >
                   <p className="pt-3 text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed border-t border-neutral-200 dark:border-neutral-700 mt-3">
                     {details}
@@ -76,6 +77,6 @@ export default function BlueprintCard({ title, icon: Icon, summary, details, isE
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

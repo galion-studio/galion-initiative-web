@@ -294,24 +294,24 @@ Best regards,
                           transition={{ duration: 0.3 }}
                           className="animate-in fade-in slide-in-from-bottom-2 duration-300"
                         >
-                            <Tabs defaultValue="BTC" className="w-full" onValueChange={(val) => trackEvent('crypto_tab_change', { currency: val })}>
-                                <TabsList className="grid w-full grid-cols-3 bg-neutral-950 p-1 rounded-lg mb-4 sm:mb-6 border border-neutral-800 h-10 sm:h-9">
-                                    <TabsTrigger value="BTC" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">BTC</TabsTrigger>
-                                    <TabsTrigger value="ETH" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">ETH</TabsTrigger>
-                                    <TabsTrigger value="USDT" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">USDT</TabsTrigger>
-                                </TabsList>
-                                <div className="relative min-h-[180px]">
-                                    <TabsContent value="BTC" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <Tabs defaultValue="BTC" className="w-full" onValueChange={(val) => trackEvent('crypto_tab_change', { currency: val })}>
+                        <TabsList className="grid w-full grid-cols-3 bg-neutral-950 p-1 rounded-lg mb-4 sm:mb-6 border border-neutral-800 h-10 sm:h-9">
+                            <TabsTrigger value="BTC" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">BTC</TabsTrigger>
+                            <TabsTrigger value="ETH" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">ETH</TabsTrigger>
+                            <TabsTrigger value="USDT" className="text-xs rounded-md data-[state=active]:bg-neutral-800 text-neutral-400 data-[state=active]:text-white transition-all h-8 sm:h-7 touch-manipulation">USDT</TabsTrigger>
+                        </TabsList>
+                        <div className="relative min-h-[180px]">
+                            <TabsContent value="BTC" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
                                         <CryptoAddress currency="BTC" comingSoon={true} />
-                                    </TabsContent>
-                                    <TabsContent value="ETH" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
+                            </TabsContent>
+                            <TabsContent value="ETH" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
                                         <CryptoAddress currency="ETH" comingSoon={true} />
-                                    </TabsContent>
-                                    <TabsContent value="USDT" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
+                            </TabsContent>
+                            <TabsContent value="USDT" className="mt-0 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300">
                                         <CryptoAddress currency="USDT" comingSoon={true} />
-                                    </TabsContent>
-                                </div>
-                            </Tabs>
+                            </TabsContent>
+                        </div>
+                    </Tabs>
                         </motion.div>
                     )}
                 </div>
