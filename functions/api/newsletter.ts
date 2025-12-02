@@ -34,6 +34,21 @@ interface Env {
 
 export async function onRequestPost({ request, env }: { request: Request; env: Env }) {
   try {
+    // Check if D1 database is available
+    if (!env.DB) {
+      console.error('D1 database binding not found. Make sure DB is bound in Cloudflare Pages settings.');
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: "Database not configured. Please contact support." 
+        }),
+        { 
+          status: 500,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
     // Get client IP for rate limiting
     const ip = request.headers.get('cf-connecting-ip') || 
                request.headers.get('x-forwarded-for') || 
@@ -117,11 +132,23 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
       }
     );
   } catch (error) {
-    // Log error for debugging
-    console.error('Newsletter subscription error:', error);
+    // Log error for debugging with more details
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : String(error);
+    console.error('Newsletter subscription error:', {
+      message: errorMessage,
+      stack: errorStack,
+      error: error
+    });
     
+    // Return more specific error message
     return new Response(
-      JSON.stringify({ success: false, error: "Internal server error" }),
+      JSON.stringify({ 
+        success: false, 
+        error: errorMessage.includes('database') || errorMessage.includes('DB') 
+          ? "Database error. Please try again later." 
+          : "Internal server error. Please try again."
+      }),
       { 
         status: 500,
         headers: { 'Content-Type': 'application/json' }

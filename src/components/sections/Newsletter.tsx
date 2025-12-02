@@ -33,13 +33,22 @@ export default function Newsletter() {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error('Failed to subscribe');
+      const result = await response.json();
 
-      toast.success("Subscribed! Check your email to confirm.");
+      if (!response.ok) {
+        // Show the actual error message from the server if available
+        const errorMessage = result.error || 'Failed to subscribe';
+        throw new Error(errorMessage);
+      }
+
+      toast.success("Subscribed successfully! Thank you for joining our newsletter.");
       trackEvent('newsletter_subscribe', { location: 'footer' });
       form.reset();
     } catch (error) {
-      toast.error("Failed to subscribe. Please try again.");
+      // Show more detailed error message
+      const errorMessage = error instanceof Error ? error.message : 'Failed to subscribe. Please try again.';
+      toast.error(errorMessage);
+      console.error('Newsletter subscription error:', error);
     } finally {
       setIsSubmitting(false);
     }
