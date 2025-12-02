@@ -19,8 +19,9 @@ Institutional-grade website for The Galion Initiative - a nonprofit research org
 
 ## Environment Variables
 - `NEXT_PUBLIC_SITE_URL`: https://galioninitiative.org
-- `RESEND_API_KEY`: API Key for Resend (Email)
-- `NEXT_PUBLIC_NEWSLETTER_LIST_ID`: Audience ID for newsletter
+- `NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN`: (Optional) Cloudflare Web Analytics token
+
+**Newsletter**: Uses Cloudflare D1 database (no API keys needed). See `CLOUDFLARE_D1_SETUP.md` for setup.
 
 ## Deployment
 Deployed on Cloudflare Pages.

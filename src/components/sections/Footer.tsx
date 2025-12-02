@@ -123,9 +123,24 @@ export default function Footer() {
             <ul className="space-y-3 sm:space-y-4">
               <li>
                 <a 
-                  href="mailto:contact@galioninitiative.org" 
-                  className="flex items-start sm:items-center justify-center sm:justify-start gap-2 sm:gap-3 hover:text-white transition-colors group touch-manipulation break-all"
-                  onClick={() => trackEvent('click_email', { email: 'contact', location: 'footer' })}
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    trackEvent('click_email', { email: 'contact', location: 'footer' });
+                    const subject = encodeURIComponent('General Inquiry - The Galion Initiative');
+                    const body = encodeURIComponent(`Dear Galion Initiative Team,
+
+I am reaching out with a general inquiry about The Galion Initiative.
+
+[Please provide details about your inquiry here]
+
+Best regards,
+[Your Name]
+[Your Email]
+[Your Organization (if applicable)]`);
+                    window.location.href = `mailto:contact@galioninitiative.org?subject=${subject}&body=${body}`;
+                  }}
+                  className="flex items-start sm:items-center justify-center sm:justify-start gap-2 sm:gap-3 hover:text-white transition-colors group touch-manipulation break-all cursor-pointer"
                 >
                   <Mail className="w-4 h-4 text-primary-500 group-hover:text-white transition-colors flex-shrink-0 mt-0.5 sm:mt-0" /> 
                   <span className="text-xs sm:text-sm">contact@galioninitiative.org</span>
@@ -133,9 +148,30 @@ export default function Footer() {
               </li>
               <li>
                 <a 
-                  href="mailto:grants@galioninitiative.org" 
-                  className="hover:text-white transition-colors block pl-0 sm:pl-7 border-l-0 sm:border-l border-neutral-900 hover:border-primary-900 touch-manipulation break-all"
-                  onClick={() => trackEvent('click_email', { email: 'grants', location: 'footer' })}
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    trackEvent('click_email', { email: 'grants', location: 'footer' });
+                    const subject = encodeURIComponent('Grants & Partnership Inquiry - The Galion Initiative');
+                    const body = encodeURIComponent(`Dear Galion Initiative Grants Team,
+
+I am interested in learning more about partnership and grant opportunities with The Galion Initiative.
+
+Organization: [Your Organization Name]
+Type of Partnership: [e.g., Strategic Partner, Founding Partner, Benefactor, Supporter]
+Proposed Contribution: [Amount or type of support]
+Interest Area: [e.g., Research, Governance, Safety Protocols]
+
+Please let me know how we can proceed.
+
+Best regards,
+[Your Name]
+[Your Title]
+[Your Email]
+[Your Phone Number]`);
+                    window.location.href = `mailto:grants@galioninitiative.org?subject=${subject}&body=${body}`;
+                  }}
+                  className="hover:text-white transition-colors block pl-0 sm:pl-7 border-l-0 sm:border-l border-neutral-900 hover:border-primary-900 touch-manipulation break-all cursor-pointer"
                 >
                   <span className="text-neutral-500 text-xs block mb-0.5">Grants & Partnerships</span>
                   <span className="text-xs sm:text-sm">grants@galioninitiative.org</span>
@@ -143,9 +179,31 @@ export default function Footer() {
               </li>
               <li>
                 <a 
-                  href="mailto:press@galioninitiative.org" 
-                  className="hover:text-white transition-colors block pl-0 sm:pl-7 border-l-0 sm:border-l border-neutral-900 hover:border-primary-900 touch-manipulation break-all"
-                  onClick={() => trackEvent('click_email', { email: 'press', location: 'footer' })}
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    trackEvent('click_email', { email: 'press', location: 'footer' });
+                    const subject = encodeURIComponent('Media Inquiry - The Galion Initiative');
+                    const body = encodeURIComponent(`Dear Galion Initiative Press Team,
+
+I am reaching out with a media inquiry.
+
+Media Outlet: [Your Publication/Outlet Name]
+Your Role: [e.g., Journalist, Editor, Producer]
+Topic of Interest: [e.g., Research updates, Team interviews, Technical architecture]
+Deadline: [If applicable]
+Preferred Interview Format: [e.g., Email Q&A, Phone call, Video call]
+
+Please let me know your availability and how we can proceed.
+
+Best regards,
+[Your Name]
+[Your Title]
+[Your Email]
+[Your Phone Number]`);
+                    window.location.href = `mailto:press@galioninitiative.org?subject=${subject}&body=${body}`;
+                  }}
+                  className="hover:text-white transition-colors block pl-0 sm:pl-7 border-l-0 sm:border-l border-neutral-900 hover:border-primary-900 touch-manipulation break-all cursor-pointer"
                 >
                    <span className="text-neutral-500 text-xs block mb-0.5">Media Inquiries</span>
                   <span className="text-xs sm:text-sm">press@galioninitiative.org</span>

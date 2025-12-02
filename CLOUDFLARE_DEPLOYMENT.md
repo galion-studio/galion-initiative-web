@@ -102,11 +102,7 @@ NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN=your_cloudflare_analytics_token_here
 NEXT_PUBLIC_SITE_URL=https://galioninitiative.org
 ```
 
-**Optional (if using email services):**
-```
-RESEND_API_KEY=your_resend_api_key_here
-NEXT_PUBLIC_NEWSLETTER_LIST_ID=your_newsletter_list_id_here
-```
+**Note**: Newsletter subscriptions are stored in Cloudflare D1 database. See `CLOUDFLARE_D1_SETUP.md` for setup instructions.
 
 **Note**: 
 - Replace `your_cloudflare_analytics_token_here` with your actual Cloudflare Web Analytics token if you have one. You can get this from:
@@ -163,10 +159,11 @@ Since you're using Next.js 16 with `output: 'export'`, you're deploying a static
    - The functions will handle `/api/contact` and `/api/newsletter` requests
    - Make sure the functions are in the `functions/api/` directory (already created)
 
-3. **Email Integration**: Currently, your API routes only log to console. For production:
-   - Implement email sending using Resend API or similar service
-   - Add `RESEND_API_KEY` as an environment variable in Cloudflare Pages
-   - Update your API routes to actually send emails
+3. **Newsletter Subscriptions**: Newsletter subscriptions are stored in Cloudflare D1 database:
+   - See `CLOUDFLARE_D1_SETUP.md` for complete setup instructions
+   - Create a D1 database and bind it to your Pages project
+   - Run the SQL schema from `schema.sql` to create the subscribers table
+   - No external services needed - everything runs on Cloudflare!
 
 4. **Static Assets**: Files in the `public/` directory (including `blueprint.pdf`) will be served automatically.
 

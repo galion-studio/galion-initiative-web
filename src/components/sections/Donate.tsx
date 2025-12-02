@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CryptoAddress from '@/components/shared/CryptoAddress';
-import { Coffee, ArrowRight, Heart } from 'lucide-react';
+import { Coffee, ArrowRight, Heart, CreditCard } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 
 const tiers = [
@@ -141,18 +141,33 @@ Best regards,
             </h3>
             
             <div className="bg-neutral-900/20 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-neutral-800 shadow-xl flex-1 flex flex-col">
-                {/* Ko-fi Section */}
+                {/* Ko-fi Section - Card/PayPal Payments */}
                 <div className="mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-neutral-800">
-                    <Button className="w-full bg-[#FF5E5B] hover:bg-[#FF413D] text-white flex items-center justify-center gap-2 py-5 sm:py-6 text-sm sm:text-base rounded-xl shadow-lg hover:shadow-[#FF5E5B]/20 transition-all group mb-3 sm:mb-4 touch-manipulation min-h-[48px]" onClick={() => {
+                    <div className="mb-4 text-center">
+                        <span className="inline-block text-xs font-semibold text-primary-400 uppercase tracking-wider mb-3 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20">
+                            Most Popular
+                        </span>
+                        <p className="text-sm text-neutral-300 mb-2 font-medium">Quick & Secure Donations</p>
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                            <CreditCard className="w-4 h-4 text-neutral-500" />
+                            <span className="text-xs text-neutral-500">Visa, Mastercard, Amex, PayPal accepted</span>
+                        </div>
+                    </div>
+                    <Button className="w-full bg-[#FF5E5B] hover:bg-[#FF413D] text-white flex items-center justify-center gap-2 py-6 sm:py-7 text-base sm:text-lg rounded-xl shadow-lg hover:shadow-[#FF5E5B]/20 transition-all group mb-4 touch-manipulation min-h-[56px] font-semibold" onClick={() => {
                         trackEvent('click_kofi_support', { location: 'donate_section' });
-                        window.open('https://ko-fi.com', '_blank');
+                        window.open('https://ko-fi.com/galioninitiative', '_blank');
                     }}>
-                            <Heart className="w-5 h-5 fill-current group-hover:scale-110 transition-transform" />
-                            Support on Ko-fi
+                            <Heart className="w-6 h-6 fill-current group-hover:scale-110 transition-transform" />
+                            Donate with Card or PayPal
                     </Button>
+                    
+                    <p className="text-xs text-neutral-500 text-center mb-4 leading-relaxed">
+                        Choose any amount • One-time or recurring donations • Secure checkout via Stripe
+                    </p>
+
                     <div className="flex justify-center gap-2 sm:gap-3 flex-wrap">
                         {['$5', '$10', '$25', '$100'].map((amt) => (
-                            <div key={amt} className="px-3 sm:px-4 py-1.5 rounded-full bg-neutral-900 text-neutral-400 text-xs font-mono border border-neutral-800 hover:border-neutral-700 hover:text-white transition-colors cursor-default">
+                            <div key={amt} className="px-4 sm:px-5 py-2 rounded-full bg-neutral-900 text-neutral-400 text-xs sm:text-sm font-mono border border-neutral-800 hover:border-neutral-700 hover:text-white transition-colors cursor-default">
                                 {amt}
                             </div>
                         ))}

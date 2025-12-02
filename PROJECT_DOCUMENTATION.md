@@ -95,8 +95,9 @@ galion-initiative-web/
     ```
     *Required Variables:*
     *   `NEXT_PUBLIC_SITE_URL`: Your production URL.
-    *   `RESEND_API_KEY`: API key for email service (optional for dev).
-    *   `NEXT_PUBLIC_NEWSLETTER_LIST_ID`: Audience ID (optional for dev).
+    *   `NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN`: (Optional) Cloudflare Web Analytics token.
+    
+    **Newsletter**: Uses Cloudflare D1 database (no API keys needed). See `CLOUDFLARE_D1_SETUP.md` for setup.
 
 4.  **Run Development Server**:
     ```bash
@@ -157,8 +158,9 @@ This command compiles the application and checks for type errors.
 
 ## 6. Future Roadmap
 
-1.  **Email Integration**: Connect the API routes to a real email service (e.g., Resend or SendGrid) using the defined environment variables.
-2.  **Analytics**: Integrate Cloudflare Web Analytics or similar privacy-focused analytics.
-3.  **CMS Integration**: If a blog or research paper section is added, integrate a CMS (Sanity, Contentful).
-4.  **Real Assets**: Replace the placeholder `qrUrl` in `CryptoAddress` with actual QR code images and use `next/image` for optimization.
+1.  **Newsletter Management**: Set up Cloudflare D1 database for newsletter subscriptions (see `CLOUDFLARE_D1_SETUP.md`).
+2.  **Email Sending**: Implement email sending for contact form submissions (can use Cloudflare Email Workers or external service).
+3.  **Analytics**: Integrate Cloudflare Web Analytics (token already configured in environment variables).
+4.  **CMS Integration**: If a blog or research paper section is added, integrate a CMS (Sanity, Contentful).
+5.  **Real Assets**: Replace the placeholder `qrUrl` in `CryptoAddress` with actual QR code images and use `next/image` for optimization.
 

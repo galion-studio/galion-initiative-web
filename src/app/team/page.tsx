@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Linkedin, Twitter, Github, Mail } from 'lucide-react';
+import { ArrowLeft, Linkedin, Twitter, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import JoinTeam from '@/components/sections/JoinTeam';
 import { trackEvent } from '@/lib/analytics';
@@ -17,7 +17,6 @@ interface TeamMember {
   linkedin?: string;
   twitter?: string;
   github?: string;
-  email?: string;
 }
 
 // Team members - replace with actual team data
@@ -28,8 +27,7 @@ const teamMembers: TeamMember[] = [
     department: "Leadership",
     bio: "Visionary leader and founder of The Galion Initiative. Dedicated to building safe superintelligence through innovative dual-core architecture and transparent governance.",
     linkedin: "#",
-    twitter: "#",
-    email: "maciej@galioninitiative.org"
+    twitter: "#"
   },
   {
     name: "Dr. Aiden Thompson",
@@ -37,8 +35,7 @@ const teamMembers: TeamMember[] = [
     department: "Leadership",
     bio: "Former AI safety researcher at OpenAI. PhD in Computer Science from MIT. Focused on alignment theory and dual-core architectures.",
     linkedin: "#",
-    twitter: "#",
-    email: "aiden@galioninitiative.org"
+    twitter: "#"
   },
   {
     name: "Dr. Sofia Martinez",
@@ -46,8 +43,7 @@ const teamMembers: TeamMember[] = [
     department: "Leadership",
     bio: "Systems architect with 15+ years in distributed computing. Led safety-critical systems at major tech companies. Expert in hardware-level safety constraints.",
     linkedin: "#",
-    github: "#",
-    email: "sofia@galioninitiative.org"
+    github: "#"
   },
   {
     name: "Dr. Viktor Petrov",
@@ -72,8 +68,7 @@ const teamMembers: TeamMember[] = [
     department: "Policy",
     bio: "Philosopher and policy expert. Former advisor to EU AI regulation. Focused on institutional oversight and transparent governance.",
     linkedin: "#",
-    twitter: "#",
-    email: "amara@galioninitiative.org"
+    twitter: "#"
   },
   {
     name: "Jordan Lee",
@@ -220,16 +215,6 @@ export default function TeamPage() {
                             onClick={() => trackEvent('click_team_social', { member: member.name, platform: 'github', location: 'team_page' })}
                           >
                             <Github className="w-5 h-5 sm:w-6 sm:h-6" />
-                          </a>
-                        )}
-                        {member.email && (
-                          <a
-                            href={`mailto:${member.email}`}
-                            className="text-neutral-500 hover:text-primary-400 transition-colors ml-auto p-2 -m-2 touch-manipulation"
-                            aria-label={`Email ${member.name}`}
-                            onClick={() => trackEvent('click_team_email', { member: member.name, location: 'team_page' })}
-                          >
-                            <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
                           </a>
                         )}
                       </div>

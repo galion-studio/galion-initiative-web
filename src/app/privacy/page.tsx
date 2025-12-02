@@ -95,8 +95,22 @@ export default function PrivacyPolicy() {
             <p className="text-sm sm:text-base">
               If you have any questions about this Privacy Policy, please contact us at{' '}
               <a 
-                href="mailto:contact@galioninitiative.org" 
-                className="text-primary-400 hover:underline break-all"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const subject = encodeURIComponent('Privacy Policy Inquiry - The Galion Initiative');
+                  const body = encodeURIComponent(`Dear Galion Initiative Team,
+
+I have a question regarding your Privacy Policy.
+
+[Please provide details about your question here]
+
+Best regards,
+[Your Name]
+[Your Email]`);
+                  window.location.href = `mailto:contact@galioninitiative.org?subject=${subject}&body=${body}`;
+                }}
+                className="text-primary-400 hover:underline break-all cursor-pointer"
               >
                 contact@galioninitiative.org
               </a>.
