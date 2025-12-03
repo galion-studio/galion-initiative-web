@@ -87,55 +87,70 @@ function AnalyticsTracker() {
   }, [pathname, analyticsEnabled]);
 
   // Global click tracker for "everything" (only if analytics enabled)
+  // Optimized for INP: Defer tracking to avoid blocking user interactions
   useEffect(() => {
     if (!analyticsEnabled) return;
 
     const handleClick = (e: MouseEvent) => {
-      // We want to track clicks on interactive elements
-      const target = e.target as HTMLElement;
-      
-      // Find the closest interactive element
-      const element = target.closest('button, a, [role="button"], input[type="submit"], input[type="button"]');
-      
-      if (!element) return;
-
-      const elementType = element.tagName.toLowerCase();
-      let eventName = `click_${elementType}`;
-      const properties: Record<string, any> = {
-        tag: elementType,
-        text: element.textContent?.slice(0, 50).trim() || '',
-        id: element.id || undefined,
-        classes: element.className || undefined,
-        path: pathname,
+      // Defer all tracking work to avoid blocking the interaction
+      // Use requestIdleCallback if available, otherwise setTimeout(0) as fallback
+      const scheduleTracking = (callback: () => void) => {
+        if ('requestIdleCallback' in window && typeof window.requestIdleCallback === 'function') {
+          window.requestIdleCallback(callback, { timeout: 1000 });
+        } else {
+          setTimeout(callback, 0);
+        }
       };
 
-      if (element instanceof HTMLAnchorElement) {
-        properties.href = element.href;
-        eventName = 'click_link';
+      scheduleTracking(() => {
+        // We want to track clicks on interactive elements
+        const target = e.target as HTMLElement;
         
-        // Distinguish external vs internal
-        if (element.hostname !== window.location.hostname) {
-            properties.type = 'external';
-        } else {
-            properties.type = 'internal';
+        // Find the closest interactive element
+        const element = target.closest('button, a, [role="button"], input[type="submit"], input[type="button"]');
+        
+        if (!element) return;
+
+        const elementType = element.tagName.toLowerCase();
+        let eventName = `click_${elementType}`;
+        const properties: Record<string, any> = {
+          tag: elementType,
+          text: element.textContent?.slice(0, 50).trim() || '',
+          id: element.id || undefined,
+          classes: element.className || undefined,
+          path: pathname,
+        };
+
+        if (element instanceof HTMLAnchorElement) {
+          properties.href = element.href;
+          eventName = 'click_link';
+          
+          // Distinguish external vs internal
+          if (element.hostname !== window.location.hostname) {
+              properties.type = 'external';
+          } else {
+              properties.type = 'internal';
+          }
+        } else if (element instanceof HTMLButtonElement) {
+            properties.type = element.type;
         }
-      } else if (element instanceof HTMLButtonElement) {
-          properties.type = element.type;
-      }
 
-      // If the element has a specific tracking ID or data attribute, prioritize that
-      const trackingId = element.getAttribute('data-track-id');
-      if (trackingId) {
-          properties.track_id = trackingId;
-      }
+        // If the element has a specific tracking ID or data attribute, prioritize that
+        const trackingId = element.getAttribute('data-track-id');
+        if (trackingId) {
+            properties.track_id = trackingId;
+        }
 
-      trackEvent(eventName, properties);
+        trackEvent(eventName, properties);
+      });
     };
 
-    window.addEventListener('click', handleClick, { capture: true });
+    // Use capture: false to avoid blocking other handlers
+    // Analytics tracking should not interfere with user interactions
+    window.addEventListener('click', handleClick, { capture: false, passive: true });
     
     return () => {
-      window.removeEventListener('click', handleClick, { capture: true });
+      window.removeEventListener('click', handleClick, { capture: false });
     };
   }, [pathname, analyticsEnabled]);
 

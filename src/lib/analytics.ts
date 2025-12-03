@@ -30,6 +30,9 @@ declare global {
 /**
  * Track an event using Cloudflare Zaraz (if available) or log to console in dev.
  * Respects cookie consent preferences - only tracks if analytics cookies are enabled.
+ * 
+ * Optimized for INP: This function is designed to be fast and non-blocking.
+ * Analytics calls should be deferred when called from interaction handlers.
  */
 export function trackEvent(name: string, properties?: Record<string, any>) {
   try {
@@ -42,39 +45,58 @@ export function trackEvent(name: string, properties?: Record<string, any>) {
       return;
     }
 
-    // 1. Cloudflare Zaraz Support
-    if (typeof window !== 'undefined' && window.zaraz) {
-      window.zaraz.track(name, properties);
-    }
-    
-    // 2. Cloudflare Web Analytics (if available)
-    if (typeof window !== 'undefined' && window.cloudflare?.analytics) {
-      window.cloudflare.analytics.track(name, properties);
-    }
-    
-    // 3. Google Analytics (gtag) Support
-    if (typeof window !== 'undefined' && window.gtag) {
-      const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-      if (gaId) {
-        // Convert properties to Google Analytics event format
-        const eventParams: Record<string, any> = {
-          event_category: properties?.category || 'engagement',
-          event_label: properties?.label || name,
-          ...properties,
-        };
-        
-        // Remove category and label from properties if they exist (already in eventParams)
-        if (properties?.category) delete eventParams.category;
-        if (properties?.label) delete eventParams.label;
-        
-        window.gtag('event', name, eventParams);
+    // Batch analytics calls to avoid multiple synchronous operations
+    // Use requestIdleCallback if available for better performance
+    const executeTracking = () => {
+      // 1. Cloudflare Zaraz Support
+      if (typeof window !== 'undefined' && window.zaraz) {
+        try {
+          window.zaraz.track(name, properties);
+        } catch (e) {
+          // Fail silently for individual providers
+        }
       }
-    }
-    
-    // 4. Development Logging
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[Analytics] ${name}`, properties);
-    }
+      
+      // 2. Cloudflare Web Analytics (if available)
+      if (typeof window !== 'undefined' && window.cloudflare?.analytics) {
+        try {
+          window.cloudflare.analytics.track(name, properties);
+        } catch (e) {
+          // Fail silently for individual providers
+        }
+      }
+      
+      // 3. Google Analytics (gtag) Support
+      if (typeof window !== 'undefined' && window.gtag) {
+        try {
+          const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+          if (gaId) {
+            // Convert properties to Google Analytics event format
+            const eventParams: Record<string, any> = {
+              event_category: properties?.category || 'engagement',
+              event_label: properties?.label || name,
+              ...properties,
+            };
+            
+            // Remove category and label from properties if they exist (already in eventParams)
+            if (properties?.category) delete eventParams.category;
+            if (properties?.label) delete eventParams.label;
+            
+            window.gtag('event', name, eventParams);
+          }
+        } catch (e) {
+          // Fail silently for individual providers
+        }
+      }
+      
+      // 4. Development Logging
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[Analytics] ${name}`, properties);
+      }
+    };
+
+    // Execute tracking immediately (this function should already be called from deferred context)
+    executeTracking();
 
   } catch (error) {
     // Fail silently so user experience isn't affected

@@ -53,14 +53,26 @@ function Button({
   const Comp = asChild ? Slot : "button"
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    // Automatically track button clicks
-    // Use innerText or aria-label as the button name for tracking
-    const buttonName = (e.currentTarget.innerText || e.currentTarget.getAttribute('aria-label') || 'unknown_button').substring(0, 50);
-    trackEvent('button_click', { name: buttonName, variant: variant || 'default' });
-    
+    // Defer analytics tracking to avoid blocking the click handler
+    // This improves INP (Interaction to Next Paint) by not delaying the user's interaction
+    const scheduleTracking = (callback: () => void) => {
+      if ('requestIdleCallback' in window && typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(callback, { timeout: 1000 });
+      } else {
+        setTimeout(callback, 0);
+      }
+    };
+
+    // Execute user's onClick handler immediately (no delay)
     if (onClick) {
       onClick(e);
     }
+
+    // Track analytics after the interaction is handled
+    scheduleTracking(() => {
+      const buttonName = (e.currentTarget.innerText || e.currentTarget.getAttribute('aria-label') || 'unknown_button').substring(0, 50);
+      trackEvent('button_click', { name: buttonName, variant: variant || 'default' });
+    });
   };
 
   return (
