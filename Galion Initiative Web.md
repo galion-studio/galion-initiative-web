@@ -498,7 +498,8 @@ FILES:
 REQUIREMENTS:
     • Next.js App Router API format (export async function POST)
     • Validate request body with Zod
-    • Simple in-memory rate limiting (3 requests per IP per 10 min)
+
+31     • Simple in-memory rate limiting (3 requests per IP per 10 min)
     • Return JSON responses
     • Error handling (400, 429, 500)
 NEWSLETTER ROUTE:

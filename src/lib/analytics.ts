@@ -18,6 +18,12 @@ declare global {
         track: (eventName: string, properties?: Record<string, any>) => void;
       };
     };
+    gtag?: (
+      command: 'config' | 'event' | 'set' | 'js',
+      targetId: string | Date,
+      config?: Record<string, any>
+    ) => void;
+    dataLayer?: any[];
   }
 }
 
@@ -46,7 +52,26 @@ export function trackEvent(name: string, properties?: Record<string, any>) {
       window.cloudflare.analytics.track(name, properties);
     }
     
-    // 3. Development Logging
+    // 3. Google Analytics (gtag) Support
+    if (typeof window !== 'undefined' && window.gtag) {
+      const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+      if (gaId) {
+        // Convert properties to Google Analytics event format
+        const eventParams: Record<string, any> = {
+          event_category: properties?.category || 'engagement',
+          event_label: properties?.label || name,
+          ...properties,
+        };
+        
+        // Remove category and label from properties if they exist (already in eventParams)
+        if (properties?.category) delete eventParams.category;
+        if (properties?.label) delete eventParams.label;
+        
+        window.gtag('event', name, eventParams);
+      }
+    }
+    
+    // 4. Development Logging
     if (process.env.NODE_ENV === 'development') {
       console.log(`[Analytics] ${name}`, properties);
     }

@@ -244,3 +244,327 @@
   align-items: center;
   gap: 0 !important;
 }
+
+/* Google Translate Widget Customization - Modern & Seamless */
+/* Hide the default Google Translate banner that appears at the top */
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+/* Prevent body from shifting when Google Translate loads */
+body {
+  top: 0 !important;
+}
+
+/* Override Google Translate's default white background globally */
+body > .goog-te-banner-frame,
+body > .skiptranslate {
+  display: none !important;
+}
+
+/* Modern translate widget container */
+.translate-widget-modern {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Style the language dropdown to be seamless and modern */
+.goog-te-combo {
+  background-color: transparent !important;
+  border: none !important;
+  color: #e0f2fe !important; /* Light blue text matching theme */
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  outline: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  min-width: 80px !important;
+  width: 100% !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+}
+
+/* Responsive font size for mobile */
+@media (min-width: 640px) {
+  .goog-te-combo {
+    font-size: 15px !important;
+    min-width: 100px !important;
+  }
+}
+
+/* Hover state for dropdown */
+.goog-te-combo:hover {
+  color: #7cc2fc !important; /* Lighter blue on hover */
+}
+
+/* Focus state for accessibility */
+.goog-te-combo:focus {
+  outline: none !important;
+  color: #36a2f8 !important; /* Primary-400 on focus */
+}
+
+/* Remove default Google Translate gadget styling */
+#google_translate_element .goog-te-gadget {
+  font-family: inherit !important;
+  font-size: 0 !important; /* Hide default text */
+  color: transparent !important;
+}
+
+/* Simplify and modernize the gadget container */
+#google_translate_element .goog-te-gadget-simple {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+/* Style the selected language text - modern and readable */
+#google_translate_element .goog-te-menu-value {
+  color: #e0f2fe !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+#google_translate_element .goog-te-menu-value span {
+  color: #e0f2fe !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+/* Responsive font size for mobile */
+@media (min-width: 640px) {
+  #google_translate_element .goog-te-menu-value {
+    font-size: 15px !important;
+  }
+  
+  #google_translate_element .goog-te-menu-value span {
+    font-size: 15px !important;
+  }
+}
+
+/* Hide the Google Translate icon */
+#google_translate_element .goog-te-gadget-icon {
+  display: none !important;
+}
+
+/* Hide "Powered by Google" text and logo */
+.goog-logo-link {
+  display: none !important;
+}
+
+.goog-te-gadget {
+  color: transparent !important;
+}
+
+/* Style the dropdown menu to match modern design - comprehensive targeting */
+.goog-te-menu-frame,
+.goog-te-menu-frame.skiptranslate,
+iframe.goog-te-menu-frame {
+  background: rgb(15, 23, 42) !important; /* neutral-900 */
+  border: 1px solid rgba(12, 135, 232, 0.3) !important; /* primary-500 with transparency */
+  border-radius: 0.75rem !important; /* rounded-xl */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2) !important;
+  backdrop-filter: blur(12px) !important;
+  padding: 0.5rem !important;
+  margin-top: 0.5rem !important;
+  z-index: 9999 !important;
+  position: absolute !important;
+}
+
+/* Target the menu container inside the frame */
+.goog-te-menu,
+.goog-te-menu2 {
+  background: rgb(15, 23, 42) !important; /* neutral-900 */
+  color: #f8fafc !important; /* neutral-50 */
+  border: none !important;
+  padding: 0.25rem !important;
+  border-radius: 0.5rem !important;
+}
+
+/* Style all dropdown menu items */
+.goog-te-menu-value,
+.goog-te-menu2-item,
+.goog-te-menu2-item div,
+.goog-te-menu2-item span {
+  padding: 0.625rem 0.75rem !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.2s ease !important;
+  color: #f8fafc !important; /* neutral-50 */
+  font-size: 14px !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+}
+
+/* Hover state for menu items */
+.goog-te-menu-value:hover,
+.goog-te-menu2-item:hover,
+.goog-te-menu2-item:hover div,
+.goog-te-menu2-item:hover span {
+  background-color: rgba(12, 135, 232, 0.15) !important;
+  color: #36a2f8 !important; /* primary-400 */
+}
+
+/* Selected/active state */
+.goog-te-menu2-item-selected,
+.goog-te-menu2-item-selected div,
+.goog-te-menu2-item-selected span,
+.goog-te-menu-value:active {
+  background-color: rgba(12, 135, 232, 0.2) !important;
+  color: #7cc2fc !important; /* primary-300 */
+}
+
+/* Style the menu table (Google uses tables for layout) */
+.goog-te-menu-table {
+  background: transparent !important;
+  border: none !important;
+  color: #f8fafc !important;
+}
+
+.goog-te-menu-table td {
+  background: transparent !important;
+  border: none !important;
+  color: #f8fafc !important;
+  padding: 0.5rem !important;
+}
+
+.goog-te-menu-table td:hover {
+  background-color: rgba(12, 135, 232, 0.15) !important;
+}
+
+/* Target iframe content - this is critical for styling the actual dropdown */
+.goog-te-menu-frame iframe,
+iframe.goog-te-menu-frame {
+  background: rgb(15, 23, 42) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+}
+
+/* Style the menu value text specifically */
+.goog-te-menu-value span {
+  color: #f8fafc !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+.goog-te-menu-value:hover span {
+  color: #36a2f8 !important;
+}
+
+/* Ensure dropdown appears above everything */
+.goog-te-menu-frame.skiptranslate {
+  z-index: 9999 !important;
+  position: absolute !important;
+}
+
+/* Additional targeting for nested elements */
+.goog-te-menu-frame * {
+  color: #f8fafc !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+}
+
+.goog-te-menu-frame a,
+.goog-te-menu-frame a:visited {
+  color: #f8fafc !important;
+}
+
+.goog-te-menu-frame a:hover {
+  color: #36a2f8 !important;
+  background-color: rgba(12, 135, 232, 0.15) !important;
+}
+
+/* Target the iframe wrapper - this is what we can actually style */
+.goog-te-menu-frame,
+body > .goog-te-menu-frame,
+body > div > .goog-te-menu-frame {
+  background: rgb(15, 23, 42) !important;
+  border: 1px solid rgba(12, 135, 232, 0.3) !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2) !important;
+  backdrop-filter: blur(12px) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+  position: absolute !important;
+  overflow: hidden !important;
+}
+
+/* Style the iframe itself */
+.goog-te-menu-frame iframe,
+iframe.goog-te-menu-frame,
+body > iframe[src*="translate"] {
+  background: rgb(15, 23, 42) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Additional fallback - try to style any white backgrounds */
+.goog-te-menu-frame[style*="background"],
+.goog-te-menu-frame[style*="white"] {
+  background: rgb(15, 23, 42) !important;
+  background-color: rgb(15, 23, 42) !important;
+}
+
+/* Hide default SelectTrigger chevron icon in Google Translate component */
+[data-slot="select-trigger"] > svg:last-child,
+[data-slot="select-trigger"] [data-slot="select-icon"] {
+  display: none !important;
+}
+
+/* Ensure SelectValue has light color (primary-50) on all screens */
+[data-slot="select-trigger"] [data-slot="select-value"] {
+  color: rgb(240, 247, 255) !important; /* primary-50 - light blue/white */
+}
+
+/* Prevent Google Translate from affecting the language selector dropdown */
+/* Only ensure text is visible, don't override colors */
+[data-slot="select-content"] .notranslate span {
+  display: inline !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure SectionDivider gradient is visible and has no borders */
+section + div[class*="bg-neutral-950"],
+div[class*="bg-neutral-950"]:has([class*="bg-gradient-to-r"]) {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+/* Ensure gradient lines in dividers are visible */
+[class*="bg-gradient-to-r"][class*="via-neutral-700"] {
+  border: none !important;
+  background-image: linear-gradient(to right, transparent, rgb(51 65 85), transparent) !important;
+}
+
+/* Hide the English name in parentheses when displayed in SelectValue */
+/* SelectValue displays text content from SelectItem, so we need to hide the second span */
+[data-slot="select-trigger"] [data-slot="select-value"] .hide-in-select-value,
+[data-slot="select-value"] .hide-in-select-value,
+[data-slot="select-trigger"] [data-slot="select-value"] span:last-child {
+  display: none !important;
+}
+
+/* Alternative: Hide any text that contains parentheses in SelectValue */
+[data-slot="select-trigger"] [data-slot="select-value"] {
+  /* Use CSS to hide spans containing parentheses */
+}
+
+/* More specific: Target the second span that contains the English name */
+[data-slot="select-trigger"] [data-slot="select-value"] > span + span {
+  display: none !important;
+}

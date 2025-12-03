@@ -5,11 +5,12 @@ import { useEffect, useState } from 'react';
 import { isAnalyticsEnabled } from '@/lib/cookie-consent';
 
 /**
- * Conditionally loads Cloudflare Analytics based on cookie consent
+ * Conditionally loads Cloudflare Analytics and Google Analytics based on cookie consent
  */
 export default function AnalyticsScript() {
   const [shouldLoad, setShouldLoad] = useState(false);
   const token = process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
   useEffect(() => {
     // Check cookie consent on mount and when it changes
@@ -42,17 +43,42 @@ export default function AnalyticsScript() {
     };
   }, []);
 
-  if (!token || !shouldLoad) {
+  if (!shouldLoad) {
     return null;
   }
 
   return (
-    <Script
-      defer
-      src="https://static.cloudflareinsights.com/beacon.min.js"
-      data-cf-beacon={`{"token": "${token}"}`}
-      strategy="afterInteractive"
-    />
+    <>
+      {/* Cloudflare Analytics */}
+      {token && (
+        <Script
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={`{"token": "${token}"}`}
+          strategy="afterInteractive"
+        />
+      )}
+      
+      {/* Google Analytics */}
+      {gaId && (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+            strategy="afterInteractive"
+          />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${gaId}', {
+                page_path: window.location.pathname,
+              });
+            `}
+          </Script>
+        </>
+      )}
+    </>
   );
 }
 
