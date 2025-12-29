@@ -1,0 +1,45 @@
+{
+  "name": "@project-42/the-machine",
+  "version": "2.0.0",
+  "private": true,
+  "description": "The Machine v2.0 - Complete Finch-style AI with database, auth, patterns, and real-time monitoring",
+  "scripts": {
+    "setup": "node setup-operator.js",
+    "dev": "next dev --port 4200",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "@cloudflare/next-on-pages": "^1.13.16",
+    "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "jose": "^5.2.0",
+    "lucide-react": "^0.555.0",
+    "next": "15.1.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-hook-form": "^7.67.0",
+    "tailwind-merge": "^3.4.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "better-sqlite3": "^11.7.0",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.0",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "wrangler": "^3.99.0"
+  }
+}
