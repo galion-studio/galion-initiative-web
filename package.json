@@ -40,5 +40,9 @@
     "project-42"
   ],
   "author": "The Galion Initiative",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "pdfjs-dist": "^5.4.530",
+    "react-pdf": "^10.2.0"
+  }
 }
