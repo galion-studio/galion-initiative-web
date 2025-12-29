@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+/* Theme configuration for Tailwind v4 */
+@theme {
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(224 71% 4%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(224 71% 4%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(224 71% 4%);
+  --color-primary: hsl(16 100% 68%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-secondary: hsl(150 48% 52%);
+  --color-secondary-foreground: hsl(0 0% 100%);
+  --color-muted: hsl(220 14% 96%);
+  --color-muted-foreground: hsl(220 9% 46%);
+  --color-accent: hsl(291 64% 42%);
+  --color-accent-foreground: hsl(0 0% 100%);
+  --color-destructive: hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+  --color-border: hsl(220 13% 91%);
+  --color-input: hsl(220 13% 91%);
+  --color-ring: hsl(16 100% 68%);
+  --radius: 0.5rem;
+
+  /* Warm coral primary palette */
+  --color-primary-50: #FFF5F0;
+  --color-primary-100: #FFE8DB;
+  --color-primary-200: #FFD1B8;
+  --color-primary-300: #FFB994;
+  --color-primary-400: #FFA177;
+  --color-primary-500: #FF8A5B;
+  --color-primary-600: #E66F42;
+  --color-primary-700: #CC542D;
+  --color-primary-800: #B33C1C;
+  --color-primary-900: #8B3A1A;
+
+  /* Calm green secondary palette */
+  --color-secondary-50: #F0F9F4;
+  --color-secondary-100: #D9F2E4;
+  --color-secondary-200: #B3E5CA;
+  --color-secondary-300: #8DD7AF;
+  --color-secondary-400: #6BC999;
+  --color-secondary-500: #52B788;
+  --color-secondary-600: #3D9A6E;
+  --color-secondary-700: #2C7D55;
+  --color-secondary-800: #1F6040;
+  --color-secondary-900: #1B4332;
+}
+
+/* Custom animations for Torchbearer */
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* Gradient for warm, caring feeling */
+.bg-gradient-warm {
+  background: linear-gradient(135deg, #FF8A5B 0%, #52B788 100%);
+}
+
+/* Smooth scrolling */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    color: var(--color-foreground);
+  }
+}

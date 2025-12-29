@@ -1,0 +1,20 @@
+# Cloudflare Wrangler Configuration for Torchbearer
+# This file configures Cloudflare Pages deployment
+
+name = "torchbearer"
+compatibility_date = "2024-12-01"
+
+# Pages configuration
+pages_build_output_dir = ".next"
+
+[env.production]
+name = "torchbearer-production"
+
+[env.preview]
+name = "torchbearer-preview"
+
+# Add database bindings when needed
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "torchbearer-db"
+# database_id = "your-database-id"
