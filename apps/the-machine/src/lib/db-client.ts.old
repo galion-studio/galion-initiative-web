@@ -1,0 +1,711 @@
+/**
+ * THE MACHINE v2.0 - Database Client
+ * 
+ * Cloudflare D1 Database Integration
+ * Replaces in-memory storage with persistent database
+ * 
+ * All database operations follow Finch protocol:
+ * - Complete audit trail
+ * - Privacy-by-design
+ * - Data minimization
+ * - Justification required
+ */
+
+import type { D1Database } from '@cloudflare/workers-types';
+import type {
+  ThreatIdentification,
+  ThreatEstimate,
+  InterventionOption,
+  RiskAssessment,
+} from './assessment';
+import type { ConstraintCheck } from './constraints';
+
+// =============================================================================
+// TYPES
+// =============================================================================
+
+export interface Operator {
+  id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'operator' | 'viewer';
+  created_at: number;
+  last_login?: number;
+  is_active: boolean;
+  settings?: Record<string, any>;
+}
+
+export interface AssessmentRecord {
+  id: string;
+  operator_id: string;
+  created_at: number;
+  
+  // Identification
+  who_at_risk: string; // JSON
+  harm_type: string;
+  harm_description: string;
+  time_frame: string;
+  location?: string;
+  perpetrator?: string;
+  
+  // Estimation
+  probability: string;
+  severity: string;
+  uncertainty: string;
+  rationale_brief: string;
+  data_quality: string;
+  
+  // Reasoning
+  facts: string; // JSON
+  inferences: string; // JSON
+  speculation: string; // JSON
+  key_assumptions: string; // JSON
+  
+  // Metadata
+  risk_score: number;
+  requires_immediate_action: boolean;
+  status: 'draft' | 'pending-approval' | 'approved' | 'rejected' | 'executed';
+  
+  // Operator decision
+  operator_decision?: string;
+  operator_notes?: string;
+  decided_at?: number;
+  
+  // Privacy
+  contains_personal_data: boolean;
+  data_retention_status: string;
+  retention_authorized_by?: string;
+  retention_authorized_until?: number;
+  anonymized_at?: number;
+}
+
+export interface AuditLogRecord {
+  id: string;
+  timestamp: number;
+  category: string;
+  severity: string;
+  action: string;
+  justification: string; // REQUIRED!
+  operator_id?: string;
+  metadata?: string; // JSON
+  contains_personal_data: boolean;
+  data_retention_status: string;
+  constraint_check_passed?: boolean;
+  constraint_violations?: string; // JSON
+}
+
+// =============================================================================
+// DATABASE CLIENT CLASS
+// =============================================================================
+
+export class MachineDB {
+  private db: D1Database;
+
+  constructor(database: D1Database) {
+    this.db = database;
+  }
+
+  // ===========================================================================
+  // OPERATORS
+  // ===========================================================================
+
+  async createOperator(operator: Omit<Operator, 'created_at'>): Promise<Operator> {
+    const created_at = Math.floor(Date.now() / 1000);
+    
+    await this.db
+      .prepare(
+        `INSERT INTO operators (id, name, email, role, created_at, is_active, settings)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`
+      )
+      .bind(
+        operator.id,
+        operator.name,
+        operator.email,
+        operator.role,
+        created_at,
+        operator.is_active ? 1 : 0,
+        operator.settings ? JSON.stringify(operator.settings) : null
+      )
+      .run();
+
+    return { ...operator, created_at };
+  }
+
+  async getOperator(id: string): Promise<Operator | null> {
+    const result = await this.db
+      .prepare('SELECT * FROM operators WHERE id = ?')
+      .bind(id)
+      .first<any>();
+
+    if (!result) return null;
+
+    return {
+      ...result,
+      is_active: Boolean(result.is_active),
+      settings: result.settings ? JSON.parse(result.settings) : undefined,
+    };
+  }
+
+  async getOperatorByEmail(email: string): Promise<Operator | null> {
+    const result = await this.db
+      .prepare('SELECT * FROM operators WHERE email = ?')
+      .bind(email)
+      .first<any>();
+
+    if (!result) return null;
+
+    return {
+      ...result,
+      is_active: Boolean(result.is_active),
+      settings: result.settings ? JSON.parse(result.settings) : undefined,
+    };
+  }
+
+  async updateOperatorLogin(id: string): Promise<void> {
+    const last_login = Math.floor(Date.now() / 1000);
+    
+    await this.db
+      .prepare('UPDATE operators SET last_login = ? WHERE id = ?')
+      .bind(last_login, id)
+      .run();
+  }
+
+  async listOperators(active_only: boolean = false): Promise<Operator[]> {
+    const query = active_only
+      ? 'SELECT * FROM operators WHERE is_active = 1 ORDER BY name'
+      : 'SELECT * FROM operators ORDER BY name';
+
+    const result = await this.db.prepare(query).all<any>();
+
+    return result.results.map((row) => ({
+      ...row,
+      is_active: Boolean(row.is_active),
+      settings: row.settings ? JSON.parse(row.settings) : undefined,
+    }));
+  }
+
+  // ===========================================================================
+  // ASSESSMENTS
+  // ===========================================================================
+
+  async createAssessment(
+    assessment: RiskAssessment,
+    riskScore: number
+  ): Promise<void> {
+    const {
+      id,
+      createdBy,
+      identification,
+      estimate,
+      options,
+      status,
+      operatorNotes,
+    } = assessment;
+
+    const created_at = Math.floor(assessment.createdAt.getTime() / 1000);
+
+    // Determine if contains personal data
+    const containsPersonalData = 
+      identification.whoAtRisk.some(person => person.length > 0) ||
+      Boolean(identification.location) ||
+      Boolean(identification.perpetrator);
+
+    await this.db
+      .prepare(
+        `INSERT INTO assessments (
+          id, operator_id, created_at,
+          who_at_risk, harm_type, harm_description, time_frame, location, perpetrator,
+          probability, severity, uncertainty, rationale_brief, data_quality,
+          facts, inferences, speculation, key_assumptions,
+          risk_score, requires_immediate_action, status,
+          operator_notes, contains_personal_data, data_retention_status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      )
+      .bind(
+        id,
+        createdBy,
+        created_at,
+        JSON.stringify(identification.whoAtRisk),
+        identification.harmType,
+        identification.harmDescription,
+        identification.timeFrame,
+        identification.location || null,
+        identification.perpetrator || null,
+        estimate.probability,
+        estimate.severity,
+        estimate.uncertainty,
+        estimate.rationaleBrief,
+        estimate.dataQuality,
+        '[]', // facts - would come from AI analysis
+        '[]', // inferences
+        '[]', // speculation
+        '[]', // key_assumptions
+        riskScore,
+        riskScore >= 80 ? 1 : 0,
+        status,
+        operatorNotes || null,
+        containsPersonalData ? 1 : 0,
+        containsPersonalData ? 'pending-review' : 'active'
+      )
+      .run();
+
+    // Store intervention options
+    for (const option of options) {
+      await this.createInterventionOption(id, option);
+    }
+  }
+
+  async createInterventionOption(
+    assessmentId: string,
+    option: InterventionOption
+  ): Promise<void> {
+    await this.db
+      .prepare(
+        `INSERT INTO intervention_options (
+          id, assessment_id, option_id, description, rationale, expected_outcome,
+          risks, benefits, confidence_level, effectiveness,
+          is_reversible, violates_constraints, requires_extra_legal_action,
+          extra_legal_justification, collateral_impact, legal_status,
+          constraint_check_passed, constraint_violations
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      )
+      .bind(
+        `opt-${assessmentId}-${option.id}`,
+        assessmentId,
+        option.id,
+        option.description,
+        option.rationale,
+        option.expectedOutcome,
+        JSON.stringify(option.risks),
+        JSON.stringify(option.benefits),
+        option.confidenceLevel,
+        option.effectiveness,
+        option.isReversible ? 1 : 0,
+        option.violatesConstraints ? 1 : 0,
+        option.requiresExtraLegalAction ? 1 : 0,
+        option.extraLegalJustification || null,
+        option.collateralImpact,
+        option.legalStatus,
+        option.constraintCheck?.passed ? 1 : 0,
+        option.constraintCheck ? JSON.stringify(option.constraintCheck.violations) : null
+      )
+      .run();
+  }
+
+  async getAssessment(id: string): Promise<AssessmentRecord | null> {
+    const result = await this.db
+      .prepare('SELECT * FROM assessments WHERE id = ?')
+      .bind(id)
+      .first<AssessmentRecord>();
+
+    return result || null;
+  }
+
+  async listAssessments(
+    operatorId?: string,
+    limit: number = 50
+  ): Promise<AssessmentRecord[]> {
+    const query = operatorId
+      ? 'SELECT * FROM assessments WHERE operator_id = ? ORDER BY created_at DESC LIMIT ?'
+      : 'SELECT * FROM assessments ORDER BY created_at DESC LIMIT ?';
+
+    const result = operatorId
+      ? await this.db.prepare(query).bind(operatorId, limit).all<AssessmentRecord>()
+      : await this.db.prepare(query).bind(limit).all<AssessmentRecord>();
+
+    return result.results;
+  }
+
+  async updateAssessmentStatus(
+    id: string,
+    status: string,
+    operatorDecision?: string,
+    operatorNotes?: string
+  ): Promise<void> {
+    const decided_at = Math.floor(Date.now() / 1000);
+
+    await this.db
+      .prepare(
+        `UPDATE assessments 
+         SET status = ?, operator_decision = ?, operator_notes = ?, decided_at = ?
+         WHERE id = ?`
+      )
+      .bind(status, operatorDecision || null, operatorNotes || null, decided_at, id)
+      .run();
+  }
+
+  // ===========================================================================
+  // AUDIT LOGS
+  // ===========================================================================
+
+  async createAuditLog(log: {
+    id: string;
+    category: string;
+    severity: string;
+    action: string;
+    justification: string; // REQUIRED!
+    operatorId?: string;
+    metadata?: Record<string, any>;
+    containsPersonalData: boolean;
+    constraintCheck?: ConstraintCheck;
+  }): Promise<void> {
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    await this.db
+      .prepare(
+        `INSERT INTO audit_logs (
+          id, timestamp, category, severity, action, justification,
+          operator_id, metadata, contains_personal_data, data_retention_status,
+          constraint_check_passed, constraint_violations
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      )
+      .bind(
+        log.id,
+        timestamp,
+        log.category,
+        log.severity,
+        log.action,
+        log.justification,
+        log.operatorId || null,
+        log.metadata ? JSON.stringify(log.metadata) : null,
+        log.containsPersonalData ? 1 : 0,
+        log.containsPersonalData ? 'pending-review' : 'active',
+        log.constraintCheck?.passed !== undefined ? (log.constraintCheck.passed ? 1 : 0) : null,
+        log.constraintCheck ? JSON.stringify(log.constraintCheck.violations) : null
+      )
+      .run();
+  }
+
+  async listAuditLogs(
+    limit: number = 100,
+    category?: string,
+    severity?: string
+  ): Promise<AuditLogRecord[]> {
+    let query = 'SELECT * FROM audit_logs WHERE 1=1';
+    const bindings: any[] = [];
+
+    if (category) {
+      query += ' AND category = ?';
+      bindings.push(category);
+    }
+
+    if (severity) {
+      query += ' AND severity = ?';
+      bindings.push(severity);
+    }
+
+    query += ' ORDER BY timestamp DESC LIMIT ?';
+    bindings.push(limit);
+
+    const result = await this.db
+      .prepare(query)
+      .bind(...bindings)
+      .all<AuditLogRecord>();
+
+    return result.results;
+  }
+
+  async getUnreviewedAuditLogs(): Promise<AuditLogRecord[]> {
+    const result = await this.db
+      .prepare(
+        `SELECT * FROM audit_logs 
+         WHERE contains_personal_data = 1 
+         AND data_retention_status = 'pending-review'
+         ORDER BY timestamp DESC`
+      )
+      .all<AuditLogRecord>();
+
+    return result.results;
+  }
+
+  // ===========================================================================
+  // CONSTRAINT VIOLATIONS
+  // ===========================================================================
+
+  async logConstraintViolation(violation: {
+    constraintId: string;
+    constraintName: string;
+    severity: string;
+    actionAttempted: string;
+    violationReason: string;
+    context?: string;
+    operatorId?: string;
+    blocked: boolean;
+  }): Promise<void> {
+    const id = `violation-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    await this.db
+      .prepare(
+        `INSERT INTO constraint_violations (
+          id, timestamp, constraint_id, constraint_name, severity,
+          action_attempted, violation_reason, context, operator_id, blocked
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      )
+      .bind(
+        id,
+        timestamp,
+        violation.constraintId,
+        violation.constraintName,
+        violation.severity,
+        violation.actionAttempted,
+        violation.violationReason,
+        violation.context || null,
+        violation.operatorId || null,
+        violation.blocked ? 1 : 0
+      )
+      .run();
+  }
+
+  // ===========================================================================
+  // SHUTDOWN EVENTS
+  // ===========================================================================
+
+  async logShutdown(
+    operatorId: string,
+    reason: string,
+    emergency: boolean,
+    auditLogId: string
+  ): Promise<void> {
+    const id = `shutdown-${Date.now()}`;
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    await this.db
+      .prepare(
+        `INSERT INTO shutdown_events (
+          id, timestamp, operator_id, shutdown_reason, emergency_shutdown,
+          acknowledged, acknowledged_at, audit_log_id
+        ) VALUES (?, ?, ?, ?, ?, 1, ?, ?)`
+      )
+      .bind(
+        id,
+        timestamp,
+        operatorId,
+        reason,
+        emergency ? 1 : 0,
+        timestamp,
+        auditLogId
+      )
+      .run();
+  }
+
+  // ===========================================================================
+  // THREAT PATTERNS
+  // ===========================================================================
+
+  async createThreatPattern(pattern: {
+    id: string;
+    pattern_name: string;
+    pattern_description: string;
+    harm_type: string;
+    typical_timeframe: string;
+    typical_severity: string;
+    indicators: string[];
+    keywords: string[];
+    created_by: string;
+  }): Promise<void> {
+    const created_at = Math.floor(Date.now() / 1000);
+
+    await this.db
+      .prepare(
+        `INSERT INTO threat_patterns (
+          id, created_at, pattern_name, pattern_description,
+          harm_type, typical_timeframe, typical_severity,
+          indicators, keywords, times_detected, times_confirmed,
+          false_positive_rate, created_by, is_active
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0.0, ?, 1)`
+      )
+      .bind(
+        pattern.id,
+        created_at,
+        pattern.pattern_name,
+        pattern.pattern_description,
+        pattern.harm_type,
+        pattern.typical_timeframe,
+        pattern.typical_severity,
+        JSON.stringify(pattern.indicators),
+        JSON.stringify(pattern.keywords),
+        pattern.created_by
+      )
+      .run();
+  }
+
+  async getThreatPattern(id: string): Promise<any | null> {
+    const result = await this.db
+      .prepare('SELECT * FROM threat_patterns WHERE id = ?')
+      .bind(id)
+      .first<any>();
+
+    if (!result) return null;
+
+    return {
+      ...result,
+      indicators: JSON.parse(result.indicators),
+      keywords: JSON.parse(result.keywords),
+      is_active: Boolean(result.is_active),
+    };
+  }
+
+  async listThreatPatterns(active_only: boolean = true): Promise<any[]> {
+    const query = active_only
+      ? 'SELECT * FROM threat_patterns WHERE is_active = 1 ORDER BY pattern_name'
+      : 'SELECT * FROM threat_patterns ORDER BY pattern_name';
+
+    const result = await this.db.prepare(query).all<any>();
+
+    return result.results.map((row) => ({
+      ...row,
+      indicators: JSON.parse(row.indicators),
+      keywords: JSON.parse(row.keywords),
+      is_active: Boolean(row.is_active),
+    }));
+  }
+
+  async updatePatternStatistics(
+    patternId: string,
+    detected: boolean,
+    confirmed?: boolean
+  ): Promise<void> {
+    // Increment times_detected
+    if (detected) {
+      await this.db
+        .prepare(
+          'UPDATE threat_patterns SET times_detected = times_detected + 1 WHERE id = ?'
+        )
+        .bind(patternId)
+        .run();
+    }
+
+    // If confirmed, increment times_confirmed and recalculate false positive rate
+    if (confirmed !== undefined) {
+      await this.db
+        .prepare(
+          `UPDATE threat_patterns 
+           SET times_confirmed = times_confirmed + ?,
+               false_positive_rate = CASE 
+                 WHEN times_detected > 0 
+                 THEN (times_detected - (times_confirmed + ?)) * 1.0 / times_detected
+                 ELSE 0
+               END
+           WHERE id = ?`
+        )
+        .bind(confirmed ? 1 : 0, confirmed ? 1 : 0, patternId)
+        .run();
+    }
+  }
+
+  async linkPatternToAssessment(
+    assessmentId: string,
+    patternId: string,
+    confidence: number
+  ): Promise<void> {
+    const id = `ap-${assessmentId}-${patternId}`;
+    const detected_at = Math.floor(Date.now() / 1000);
+
+    await this.db
+      .prepare(
+        `INSERT INTO assessment_patterns (id, assessment_id, pattern_id, confidence, detected_at)
+         VALUES (?, ?, ?, ?, ?)`
+      )
+      .bind(id, assessmentId, patternId, confidence, detected_at)
+      .run();
+  }
+
+  async getPatternStatistics(patternId: string): Promise<{
+    times_detected: number;
+    times_confirmed: number;
+    false_positive_rate: number;
+    recent_detections_30d: number;
+    recent_detections_90d: number;
+  } | null> {
+    const pattern = await this.db
+      .prepare('SELECT * FROM threat_patterns WHERE id = ?')
+      .bind(patternId)
+      .first<any>();
+
+    if (!pattern) return null;
+
+    // Get recent detection counts
+    const now = Math.floor(Date.now() / 1000);
+    const thirtyDaysAgo = now - (30 * 24 * 60 * 60);
+    const ninetyDaysAgo = now - (90 * 24 * 60 * 60);
+
+    const [recent30, recent90] = await Promise.all([
+      this.db
+        .prepare(
+          'SELECT COUNT(*) as count FROM assessment_patterns WHERE pattern_id = ? AND detected_at >= ?'
+        )
+        .bind(patternId, thirtyDaysAgo)
+        .first<{ count: number }>(),
+      this.db
+        .prepare(
+          'SELECT COUNT(*) as count FROM assessment_patterns WHERE pattern_id = ? AND detected_at >= ?'
+        )
+        .bind(patternId, ninetyDaysAgo)
+        .first<{ count: number }>(),
+    ]);
+
+    return {
+      times_detected: pattern.times_detected,
+      times_confirmed: pattern.times_confirmed,
+      false_positive_rate: pattern.false_positive_rate,
+      recent_detections_30d: recent30?.count || 0,
+      recent_detections_90d: recent90?.count || 0,
+    };
+  }
+
+  // ===========================================================================
+  // STATISTICS
+  // ===========================================================================
+
+  async getStatistics(): Promise<{
+    totalAssessments: number;
+    totalAuditLogs: number;
+    totalOperators: number;
+    totalPatterns: number;
+    criticalAssessments: number;
+    unreviewedLogs: number;
+    recentPatternMatches: number;
+  }> {
+    const [assessments, audits, operators, patterns, critical, unreviewed, recentMatches] = await Promise.all([
+      this.db.prepare('SELECT COUNT(*) as count FROM assessments').first<{ count: number }>(),
+      this.db.prepare('SELECT COUNT(*) as count FROM audit_logs').first<{ count: number }>(),
+      this.db.prepare('SELECT COUNT(*) as count FROM operators WHERE is_active = 1').first<{ count: number }>(),
+      this.db.prepare('SELECT COUNT(*) as count FROM threat_patterns WHERE is_active = 1').first<{ count: number }>(),
+      this.db.prepare('SELECT COUNT(*) as count FROM assessments WHERE risk_score >= 80').first<{ count: number }>(),
+      this.db.prepare('SELECT COUNT(*) as count FROM audit_logs WHERE contains_personal_data = 1 AND data_retention_status = \'pending-review\'').first<{ count: number }>(),
+      this.db.prepare('SELECT COUNT(*) as count FROM assessment_patterns WHERE detected_at >= ?').bind(Math.floor(Date.now() / 1000) - (24 * 60 * 60)).first<{ count: number }>(),
+    ]);
+
+    return {
+      totalAssessments: assessments?.count || 0,
+      totalAuditLogs: audits?.count || 0,
+      totalOperators: operators?.count || 0,
+      totalPatterns: patterns?.count || 0,
+      criticalAssessments: critical?.count || 0,
+      unreviewedLogs: unreviewed?.count || 0,
+      recentPatternMatches: recentMatches?.count || 0,
+    };
+  }
+}
+
+// =============================================================================
+// HELPER FUNCTIONS
+// =============================================================================
+
+/**
+ * Get database instance from Cloudflare environment
+ */
+export function getDatabase(env: any): D1Database {
+  if (!env.DB) {
+    throw new Error('Database not configured. Add DB binding to wrangler.toml');
+  }
+  return env.DB;
+}
+
+/**
+ * Create database client
+ */
+export function createDatabaseClient(db: D1Database): MachineDB {
+  return new MachineDB(db);
+}

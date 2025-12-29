@@ -1,0 +1,22 @@
+# Cloudflare Wrangler Configuration for The Machine
+# Admin Console - Secure deployment configuration
+
+name = "the-machine"
+compatibility_date = "2024-12-01"
+
+# Pages configuration
+pages_build_output_dir = ".next"
+
+[env.production]
+name = "the-machine-production"
+
+[env.preview]
+name = "the-machine-preview"
+
+# D1 Database binding
+# Run: wrangler d1 create the-machine-db
+# Then paste the database_id here
+[[d1_databases]]
+binding = "DB"
+database_name = "the-machine-db"
+database_id = "YOUR_DATABASE_ID_HERE"  # Replace after running: wrangler d1 create the-machine-db

@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* Custom theme for The Machine */
+@theme {
+  /* Professional color palette */
+  --color-secondary-50: #F9FAFB;
+  --color-secondary-100: #F3F4F6;
+  --color-secondary-200: #E5E7EB;
+  --color-secondary-300: #D1D5DB;
+  --color-secondary-400: #9CA3AF;
+  --color-secondary-500: #6B7280;
+  --color-secondary-600: #4B5563;
+  --color-secondary-700: #374151;
+  --color-secondary-800: #1F2937;
+  --color-secondary-900: #111827;
+  
+  --color-destructive-500: #EF4444;
+  --color-destructive-600: #DC2626;
+}
+
+/* Minimal, functional styles for The Machine */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Professional color scheme */
+body {
+  @apply text-gray-900 bg-gray-50;
+}
+
+/* Code blocks */
+code {
+  @apply font-mono text-sm bg-gray-100 px-1 py-0.5 rounded;
+}
+
+pre {
+  @apply font-mono text-sm bg-gray-900 text-gray-50 p-4 rounded-lg overflow-x-auto;
+}
+
+/* Status indicators */
+.status-active {
+  @apply bg-green-500 text-white;
+}
+
+.status-warning {
+  @apply bg-yellow-500 text-white;
+}
+
+.status-critical {
+  @apply bg-red-500 text-white;
+}
+
+.status-inactive {
+  @apply bg-gray-300 text-gray-700;
+}
+
+/* Utility animations */
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
