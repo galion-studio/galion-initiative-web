@@ -148,7 +148,7 @@ HTML = r"""<!doctype html>
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Galion Console v2</title>
+<title>Galion Console v3</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#08090b;--surf:#111317;--fg:#e8eaee;--mut:#8b919c;--sub:#5c6370;--line:#252830;--ok:#6fbf8a;--hold:#6b8ca8}
@@ -171,11 +171,12 @@ pre{overflow:auto;background:#08090b;border:1px solid var(--line);border-radius:
 </style>
 <body>
 <header>
-  <div><p class="k">Galion console v2 · ZeroAI · CPU</p><strong>No frontends · No VRAM</strong></div>
+  <div><p class="k">Galion console v3 · ZeroAI · CPU</p><strong>Talk · catalog · no VRAM</strong></div>
   <nav id="nav">
     <button data-view="fleet" class="on">Fleet</button>
     <button data-view="domains">Domains</button>
     <button data-view="cloudflare">Cloudflare</button>
+    <button data-view="talk">Talk</button>
     <button data-view="docs">API</button>
     <button data-view="status">Status</button>
   </nav>
@@ -201,6 +202,18 @@ function go(view){
     fetch("/api/v1/cloudflare").then(r=>r.json()).then(j=>document.querySelector("#cf").textContent=JSON.stringify(j,null,2));
     return;
   }
+  if(view==="talk"){
+    app.innerHTML=`<p class="k">No model</p><h1>Talk</h1>
+      <p>ping · health · domains · services · boot · cloudflare · catalog · help</p>
+      <div class="card"><form id="talk"><input name="cmd" value="ping" style="width:100%;min-height:44px;background:#08090b;color:#e8eaee;border:1px solid #252830;border-radius:8px;padding:0 12px;font:14px/1 IBM Plex Mono,monospace"><button type="submit" style="margin-top:8px;min-height:44px;padding:0 16px">Send</button></form><pre id="out">…</pre></div>`;
+    document.querySelector("#talk").onsubmit=async (e)=>{
+      e.preventDefault();
+      const cmd=e.target.cmd.value;
+      const r=await fetch("/api/v1/command",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({cmd})});
+      document.querySelector("#out").textContent=JSON.stringify(await r.json(),null,2);
+    };
+    return;
+  }
   if(view==="docs"){
     app.innerHTML=`<p class="k">GLP + light catalog</p><h1>API</h1>
       <p>Live: <code>/api/v1/*</code>. Held: voice, images, agents, v5, websockets.</p>
@@ -214,7 +227,7 @@ function go(view){
       ${rows(sv.filter(s=>s.zone==="active"),s=>s.name,()=>"up",()=>"ok")}</div>`;
     return;
   }
-  app.innerHTML=`<p class="k">Project 42 · ${h.pod||""}</p><h1>Console v2</h1>
+  app.innerHTML=`<p class="k">Project 42 · ${h.pod||""}</p><h1>Console v3</h1>
     <p>CPU catalog and domains only. galion-app, Whisper, vLLM stay sealed.</p>
     <div class="grid two">
       <div class="card"><strong>Active</strong>${rows(sv.filter(s=>s.zone==="active"),s=>s.name,()=>"up",()=>"ok")}</div>
