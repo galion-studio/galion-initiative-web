@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 START = time.time()
 SEQ = 41
 MARKERS: list[dict] = []
-VERSION = "2.0.0-cpu"
+VERSION = "3.0.0-cpu"
 
 DOMAINS = [
     {"host": "dashboard.galion.studio", "surface": "console", "frontend": False, "zone": "active"},
@@ -284,6 +284,20 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def command(self, raw: str) -> dict:
+        cmd = (raw or "help").strip().lower().split()[0]
+        table = {
+            "ping": health(),
+            "health": health(),
+            "domains": {"items": DOMAINS},
+            "services": {"items": SERVICES},
+            "boot": {"ok": True, "mode": "cpu"},
+            "cloudflare": cloudflare(),
+            "catalog": {"talk": ["ping", "health", "domains", "services", "boot", "help"]},
+            "help": {"talk": ["ping", "health", "domains", "services", "boot", "cloudflare", "catalog", "help"]},
+        }
+        return {"ok": cmd in table, "cmd": cmd, "data": table.get(cmd, table["help"])}
+
     def do_OPTIONS(self):
         self.send_response(204)
         self.send_header("access-control-allow-origin", "*")
@@ -297,8 +311,17 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json(held(path), 503)
             return
         if path == "/api/v1/boot":
-            emit("boot", "console v2")
+            emit("boot", "console v3")
             self.send_json({"ok": True, "mode": "cpu", "version": VERSION})
+            return
+        if path == "/api/v1/command":
+            length = int(self.headers.get("content-length") or 0)
+            raw = self.rfile.read(length).decode() if length else "{}"
+            try:
+                cmd = json.loads(raw).get("cmd", "help")
+            except Exception:
+                cmd = "help"
+            self.send_json(self.command(cmd))
             return
         if path == "/api/v1/markers":
             emit("event", "marker")
@@ -378,7 +401,17 @@ class Handler(BaseHTTPRequestHandler):
             )
             return
         if path == "/api/v1/docs":
-            self.send_json({"openapi": "3.0.3", "info": {"title": "Galion console v2", "version": VERSION}})
+            self.send_json({"openapi": "3.0.3", "info": {"title": "Galion console v3", "version": VERSION}})
+            return
+        if path == "/api/v1/catalog":
+            self.send_json(
+                {
+                    "version": VERSION,
+                    "live": [e["path"] for e in SERVICES if e["zone"] == "active"],
+                    "held": list(HELD_PREFIXES),
+                    "talk": ["ping", "health", "domains", "services", "boot", "cloudflare", "catalog", "help"],
+                }
+            )
             return
         if path.startswith("/api/"):
             self.send_json({"error": "not found", "hint": "light catalog is /api/v1/*"}, 404)
