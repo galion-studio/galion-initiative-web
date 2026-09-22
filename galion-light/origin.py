@@ -461,9 +461,9 @@ def serve(port: int) -> None:
 
 
 def main() -> None:
-    emit("origin", "console v2 start")
-    threading.Thread(target=serve, args=(80,), daemon=True).start()
-    threading.Thread(target=serve, args=(8080,), daemon=True).start()
+    emit("origin", "console v3 start")
+    for port in (80, 8080, 3000, 3100, 3200, 4000, 8000, 8100, 8200):
+        threading.Thread(target=serve, args=(port,), daemon=True).start()
     print("galion-console", VERSION, IP, PROXY, flush=True)
     time.sleep(1e9)
 
