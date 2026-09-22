@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 START = time.time()
 SEQ = 41
 MARKERS: list[dict] = []
-VERSION = "3.1.1-cpu"
+VERSION = "3.2.0-cpu"
 
 DOMAINS = [
     {"host": "dashboard.galion.studio", "surface": "console", "frontend": False, "zone": "active"},
@@ -148,7 +148,7 @@ HTML = r"""<!doctype html>
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Galion Console v3</title>
+<title>Galion IDE 3.2</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#08090b;--surf:#111317;--fg:#e8eaee;--mut:#8b919c;--sub:#5c6370;--line:#252830;--ok:#6fbf8a;--hold:#6b8ca8}
@@ -171,7 +171,7 @@ pre{overflow:auto;background:#08090b;border:1px solid var(--line);border-radius:
 </style>
 <body>
 <header>
-  <div><p class="k">Galion console 3.1.1 · ZeroAI · CPU · flashed</p><strong>Soon · Talk · catalog · no VRAM</strong></div>
+  <div><p class="k">Galion IDE 3.2 · ZeroAI · CPU · mobile</p><strong>Desk · Edge · Talk · no VRAM</strong></div>
   <nav id="nav">
     <button data-view="fleet" class="on">Fleet</button>
     <button data-view="domains">Domains</button>
@@ -227,8 +227,8 @@ function go(view){
       ${rows(sv.filter(s=>s.zone==="active"),s=>s.name,()=>"up",()=>"ok")}</div>`;
     return;
   }
-  app.innerHTML=`<p class="k">Project 42 · flashed · ${h.pod||""}</p><h1>Hit it.</h1>
-    <p>CPU origin 3.1.1. Edge reconnects through the original tunnels. VRAM stays in the fridge.</p>
+  app.innerHTML=`<p class="k">Project 42 · IDE · ${h.pod||""}</p><h1>Hit it.</h1>
+    <p>CPU origin 3.2. Mobile desk. Original tunnels. VRAM stays in the fridge.</p>
     <div class="grid two">
       <div class="card"><strong>Active</strong>${rows(sv.filter(s=>s.zone==="active"),s=>s.name,()=>"up",()=>"ok")}</div>
       <div class="card"><strong>Fridge</strong>${rows(sv.filter(s=>s.zone==="chill"),s=>s.name,s=>s.vram?"VRAM":"held",()=>"hold")}</div>
