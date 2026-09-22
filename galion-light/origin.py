@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 START = time.time()
 SEQ = 41
 MARKERS: list[dict] = []
-VERSION = "3.1.0-cpu"
+VERSION = "3.1.1-cpu"
 
 DOMAINS = [
     {"host": "dashboard.galion.studio", "surface": "console", "frontend": False, "zone": "active"},
@@ -171,7 +171,7 @@ pre{overflow:auto;background:#08090b;border:1px solid var(--line);border-radius:
 </style>
 <body>
 <header>
-  <div><p class="k">Galion console v3 · ZeroAI · CPU</p><strong>Talk · catalog · no VRAM</strong></div>
+  <div><p class="k">Galion console 3.1.1 · ZeroAI · CPU · flashed</p><strong>Soon · Talk · catalog · no VRAM</strong></div>
   <nav id="nav">
     <button data-view="fleet" class="on">Fleet</button>
     <button data-view="domains">Domains</button>
@@ -227,8 +227,8 @@ function go(view){
       ${rows(sv.filter(s=>s.zone==="active"),s=>s.name,()=>"up",()=>"ok")}</div>`;
     return;
   }
-  app.innerHTML=`<p class="k">Project 42 · ${h.pod||""}</p><h1>Console v3</h1>
-    <p>CPU catalog and domains only. galion-app, Whisper, vLLM stay sealed.</p>
+  app.innerHTML=`<p class="k">Project 42 · flashed · ${h.pod||""}</p><h1>Hit it.</h1>
+    <p>CPU origin 3.1.1. Edge reconnects through the original tunnels. VRAM stays in the fridge.</p>
     <div class="grid two">
       <div class="card"><strong>Active</strong>${rows(sv.filter(s=>s.zone==="active"),s=>s.name,()=>"up",()=>"ok")}</div>
       <div class="card"><strong>Fridge</strong>${rows(sv.filter(s=>s.zone==="chill"),s=>s.name,s=>s.vram?"VRAM":"held",()=>"hold")}</div>

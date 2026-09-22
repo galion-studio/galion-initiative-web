@@ -6,9 +6,13 @@ ROOT=/workspace/galion-light
 mkdir -p "$ROOT"
 curl -fsSL https://raw.githubusercontent.com/galion-studio/galion-initiative-web/cpu-light/galion-light/origin.py -o "$ROOT/origin.py"
 
-pkill -f /workspace/galion-light/origin.py 2>/dev/null || true
+pkill -9 -f /workspace/galion-light/origin.py 2>/dev/null || true
+pkill -9 -f "python3 .*origin.py" 2>/dev/null || true
 pkill -f "cloudflared tunnel" 2>/dev/null || true
-sleep 1
+for p in 8080 3000 3100 3200 4000 8000 8100 8200; do
+  fuser -k ${p}/tcp 2>/dev/null || true
+done
+sleep 2
 
 nohup python3 "$ROOT/origin.py" >/tmp/galion-light.log 2>&1 &
 sleep 1
@@ -29,6 +33,8 @@ sleep 3
 echo "=== origin ==="
 curl -sS http://127.0.0.1:8080/api/v1/health || curl -sS http://127.0.0.1:3200/api/v1/health || true
 echo
+echo "=== listening ==="
+ss -lptn | grep -E ':(80|8080|3100|3200|8100|8200)\b' || netstat -lptn 2>/dev/null | grep -E ':(80|8080|3100|3200)' || true
 echo "=== cloudflared ==="
 pgrep -a cloudflared || true
 tail -8 /tmp/cf-studio.log /tmp/cf-app.log 2>/dev/null || true
