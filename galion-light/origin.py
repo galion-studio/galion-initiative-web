@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 START = time.time()
 SEQ = 41
 MARKERS: list[dict] = []
-VERSION = "3.0.0-cpu"
+VERSION = "3.1.0-cpu"
 
 DOMAINS = [
     {"host": "dashboard.galion.studio", "surface": "console", "frontend": False, "zone": "active"},
@@ -247,11 +247,16 @@ Promise.all([
 """
 
 SPLASH = """<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Galion</title>
-<style>body{margin:0;background:#08090b;color:#e8eaee;font:16px/1.5 "IBM Plex Sans",system-ui,sans-serif;padding:4.2rem 1.618rem}p{color:#8b919c}code{font-family:ui-monospace,monospace;color:#c5ccd6}.k{font:11px/1 ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase;color:#5c6370}</style>
-<body><p class="k">Galion · CPU origin · frontend held</p><h1>{host}</h1>
-<p>This host is on the light origin. The Next.js frontend is not loaded.</p>
-<p><code>/api/v1/health</code></p></body></html>
+<title>Galion — soon</title>
+<style>body{margin:0;background:#08090b;color:#e8eaee;font:16px/1.5 "IBM Plex Sans",system-ui,sans-serif;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid #252830}
+main{max-width:42rem;margin:0 auto;padding:4.2rem 1.25rem}h1{font-weight:500;letter-spacing:-.04em;font-size:2.75rem;margin:.5rem 0 1rem}
+p{color:#8b919c;line-height:1.5}a{color:#e8eaee}.k{font:11px/1 ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase;color:#5c6370}</style>
+<body><header><strong>Galion</strong><a href="/console">Console</a></header>
+<main><p class="k">{host} · CPU origin</p><h1>Soon online.</h1>
+<p>Origin is live. The edge is reconnecting. Public hosts return Cloudflare 1033 until CNAME is this tunnel.</p>
+<p>Frontends and GPU stay in the fridge.</p>
+<p><a href="/console">Open console</a></p></main></body></html>
 """
 
 
@@ -425,6 +430,13 @@ class Handler(BaseHTTPRequestHandler):
                     "talk": ["ping", "health", "domains", "services", "boot", "cloudflare", "catalog", "help"],
                 }
             )
+            return
+        if path == "/api/v1/ping":
+            self.send_json({"ok": True, "origin": health(), "note": "public edge ping lives on the console desk"})
+            return
+        if path == "/soon":
+            h = host.split(":")[0].lower()
+            self.send_html(SPLASH.replace("{host}", h or "galion"))
             return
         if path.startswith("/api/"):
             self.send_json({"error": "not found", "hint": "light catalog is /api/v1/*"}, 404)
